@@ -9,21 +9,18 @@ const today = new Date();
 const TARGET_MONTH = 0; // Janvier
 const TARGET_YEAR = 2026;
 
-// État de l'éditeur
-let currentEditDay = 1;
-let tempConfig = {}; // Stocke les modifs en cours
+// Admin state
+let currentDayIndex = null;
+let currentConfig = {};
 
 /* =========================================
-   PARTIE 1 : LOGIQUE PUBLIQUE (CALENDRIER)
+   PARTIE 1 : LOGIQUE PUBLIQUE
    ========================================= */
-
 function initCalendar() {
     grid.innerHTML = '';
-    // Trie par jour
     calendarData.sort((a,b) => a.day - b.day);
 
     for(let i=1; i<=30; i++) {
-        // Trouve la config ou met une par défaut
         const data = calendarData.find(d => d.day === i) || { day: i, gameType: 'none', reward: { type: 'text', content: '...' }};
         const el = document.createElement('div');
         el.className = 'day-card';
@@ -31,7 +28,6 @@ function initCalendar() {
         const isFuture = (today.getFullYear() < TARGET_YEAR) || 
                          (today.getFullYear() === TARGET_YEAR && today.getMonth() < TARGET_MONTH) ||
                          (today.getFullYear() === TARGET_YEAR && today.getMonth() === TARGET_MONTH && today.getDate() < i);
-        
         const isDone = localStorage.getItem('day_'+i) === 'true';
 
         if(isFuture) {
@@ -60,14 +56,12 @@ function openModal(data, isReplay) {
     const title = document.getElementById('modal-title');
     const desc = document.getElementById('modal-desc');
 
-    // Si pas de jeu ou replay, on montre direct la récompense
     if(isReplay || data.gameType === 'none') {
         if(!isReplay) markAsDone(data.day);
         showReward(data.reward);
         return;
     }
 
-    // Affiche le jeu
     gameSection.classList.remove('hidden');
     rewardSection.classList.add('hidden');
     
@@ -76,14 +70,10 @@ function openModal(data, isReplay) {
         desc.innerText = data.question;
 
         const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'pc-input';
-        input.placeholder = 'Réponse...';
+        input.type = 'text'; input.className = 'pc-input'; input.placeholder = 'Réponse...';
         input.addEventListener("keypress", (e) => { if(e.key==="Enter") validate(input.value, data.answer, data); });
-
         const btn = document.createElement('button');
-        btn.className = 'pc-btn';
-        btn.innerText = 'Valider';
+        btn.className = 'pc-btn'; btn.innerText = 'Valider';
         btn.onclick = () => validate(input.value, data.answer, data);
 
         document.getElementById('interaction-area').append(input, btn);
@@ -106,11 +96,11 @@ function showReward(reward) {
     const display = document.getElementById('reward-display');
     
     let html = '';
+    // Coupon Simple comme demandé
     if(reward.type === 'coupon') {
         html = `
         <div class="coupon-ticket">
-            <div class="coupon-header">BON CADEAU</div>
-            <div class="coupon-title">${reward.content}</div>
+            <div class="coupon-title">🎟️ ${reward.content}</div>
             <div class="coupon-sub">${reward.text || ''}</div>
         </div>`;
     } else if (reward.type === 'image') {
@@ -123,16 +113,12 @@ function showReward(reward) {
     display.innerHTML = html;
 }
 
-function markAsDone(day) {
-    localStorage.setItem('day_'+day, 'true');
-    initCalendar();
-}
+function markAsDone(day) { localStorage.setItem('day_'+day, 'true'); initCalendar(); }
 function closeModal() { modal.classList.remove('active'); }
 document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
 
-
 /* =========================================
-   PARTIE 2 : LOGIQUE ADMIN (NOUVEL ÉDITEUR)
+   PARTIE 2 : ADMIN (Clean & Dynamic)
    ========================================= */
 
 function toggleAdmin() {
@@ -146,7 +132,7 @@ function toggleAdmin() {
 
 function checkAdmin() {
     const pass = document.getElementById('admin-pass').value;
-    if(pass === "amour") { // MOT DE PASSE
+    if(pass === "amour") {
         document.getElementById('admin-login-screen').classList.add('hidden');
         document.getElementById('admin-workspace').classList.remove('hidden');
         renderAdminGrid();
@@ -156,181 +142,119 @@ function checkAdmin() {
 }
 function handleLogin(e) { if(e.key === "Enter") checkAdmin(); }
 
-// 1. AFFICHER LA GRILLE ADMIN
+// 1. AFFICHER LA GRILLE 30 JOURS
 function renderAdminGrid() {
     const gridEl = document.getElementById('admin-grid');
     gridEl.innerHTML = '';
     
     for(let i=1; i<=30; i++) {
-        // Vérifie si configuré
         const exists = calendarData.find(d => d.day === i);
         const card = document.createElement('div');
         card.className = `day-mini-card ${exists ? 'configured' : ''}`;
-        card.onclick = () => openEditorForDay(i);
+        if(currentDayIndex === i) card.classList.add('selected');
         
-        card.innerHTML = `
-            <h4>Jour ${i}</h4>
-            <div class="day-status">
-                <div class="status-dot"></div>
-                <span>${exists ? 'Prêt' : 'Vide'}</span>
-            </div>
-        `;
+        card.onclick = () => loadDayEditor(i);
+        card.innerHTML = `<h4>Jour ${i}</h4>`;
         gridEl.appendChild(card);
     }
 }
 
-// 2. OUVRIR L'ÉDITEUR POUR UN JOUR
-function openEditorForDay(day) {
-    currentEditDay = day;
-    document.getElementById('drawer-title').innerText = `Édition Jour ${day}`;
+// 2. CHARGER L'ÉDITEUR
+function loadDayEditor(day) {
+    currentDayIndex = day;
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('editor-panel').classList.remove('hidden');
+    document.getElementById('editor-title').innerText = `Édition du Jour ${day}`;
     
-    // Récupérer données ou créer défaut
+    // Highlight visuel
+    renderAdminGrid();
+
+    // Charger les données ou defaut
     const existing = calendarData.find(d => d.day === day);
-    tempConfig = existing ? JSON.parse(JSON.stringify(existing)) : { 
-        day: day, 
-        gameType: 'none', 
-        question: '', answer: '',
+    currentConfig = existing ? JSON.parse(JSON.stringify(existing)) : { 
+        day: day, gameType: 'none', question: '', answer: '',
         reward: { type: 'text', content: '', text: '' }
     };
 
-    // Remplir le formulaire avec les valeurs
+    // Remplir les champs
+    document.getElementById('edit-gameType').value = currentConfig.gameType;
+    document.getElementById('edit-question').value = currentConfig.question || '';
+    document.getElementById('edit-answer').value = currentConfig.answer || '';
+    
+    document.getElementById('edit-rewardType').value = currentConfig.reward.type;
+    document.getElementById('edit-content').value = currentConfig.reward.content || '';
+    document.getElementById('edit-subtext').value = currentConfig.reward.text || '';
+
+    updateFormVisibility();
+}
+
+// 3. GESTION DYNAMIQUE (LE FIX QUE TU VOULAIS)
+function updateFormVisibility() {
+    const gameType = document.getElementById('edit-gameType').value;
+    const rewardType = document.getElementById('edit-rewardType').value;
+    
     // Jeu
-    setGameType(tempConfig.gameType, null); // Visuel update
-    document.getElementById('edit-question').value = tempConfig.question || '';
-    document.getElementById('edit-answer').value = tempConfig.answer || '';
+    const gameInputs = document.getElementById('group-game-inputs');
+    if(gameType === 'none') gameInputs.classList.add('hidden');
+    else gameInputs.classList.remove('hidden');
+
+    // Récompense Labels
+    const lblContent = document.getElementById('lbl-content');
+    const hlpContent = document.getElementById('hlp-content');
     
-    // Récompense
-    setRewardType(tempConfig.reward.type, null);
-    document.getElementById('edit-content').value = tempConfig.reward.content || '';
-    document.getElementById('edit-subtext').value = tempConfig.reward.text || '';
-
-    // Ouvrir le panneau
-    document.getElementById('editor-drawer').classList.add('open');
-    
-    // Highlight grille
-    document.querySelectorAll('.day-mini-card').forEach(c => c.classList.remove('selected'));
-    // (Optionnel: ajouter selected class au bon index)
-    
-    updatePreview();
-}
-
-function closeDrawer() {
-    document.getElementById('editor-drawer').classList.remove('open');
-}
-
-// 3. GESTION DU FORMULAIRE
-function setGameType(type, element) {
-    tempConfig.gameType = type;
-    
-    // Update UI Cards
-    document.querySelectorAll('#game-selector .type-card').forEach(c => c.classList.remove('selected'));
-    if(element) element.classList.add('selected');
-    else {
-        const target = document.querySelector(`#game-selector .type-card[data-val="${type}"]`);
-        if(target) target.classList.add('selected');
-    }
-
-    // Montrer/Cacher champs
-    const fields = document.getElementById('game-fields');
-    if(type === 'none') fields.classList.add('hidden');
-    else fields.classList.remove('hidden');
-}
-
-function setRewardType(type, element) {
-    tempConfig.reward.type = type;
-    
-    // UI
-    document.querySelectorAll('#reward-selector .type-card').forEach(c => c.classList.remove('selected'));
-    if(element) element.classList.add('selected');
-    else {
-        const target = document.querySelector(`#reward-selector .type-card[data-val="${type}"]`);
-        if(target) target.classList.add('selected');
-    }
-
-    // Labels contextuels
-    const lbl = document.getElementById('content-label');
-    const helper = document.getElementById('helper-text');
-    const preview = document.getElementById('coupon-preview-container');
-
-    preview.classList.add('hidden'); // Reset
-
-    if(type === 'coupon') {
-        lbl.innerText = "Titre du Bon";
-        helper.innerText = "Ex: Massage, Resto, Ciné...";
-        preview.classList.remove('hidden');
-    } else if(type === 'image') {
-        lbl.innerText = "Lien de l'image";
-        helper.innerText = "https://...";
-    } else if(type === 'video') {
-        lbl.innerText = "ID Youtube";
-        helper.innerText = "Ex: dQw4w9WgXcQ (Juste le code à la fin)";
+    if(rewardType === 'coupon') {
+        lblContent.innerText = "Titre du Coupon";
+        hlpContent.innerText = "Ex: Bon pour un massage";
+    } else if (rewardType === 'image') {
+        lblContent.innerText = "Lien de l'image";
+        hlpContent.innerText = "https://...";
+    } else if (rewardType === 'video') {
+        lblContent.innerText = "ID Youtube";
+        hlpContent.innerText = "Code à la fin de l'URL";
     } else {
-        lbl.innerText = "Ton message";
-        helper.innerText = "";
+        lblContent.innerText = "Ton Message";
+        hlpContent.innerText = "";
     }
 }
 
-function updatePreview() {
-    const content = document.getElementById('edit-content').value;
-    const sub = document.getElementById('edit-subtext').value;
-    
-    // Update config object temps réel
-    tempConfig.reward.content = content;
-    tempConfig.reward.text = sub;
-    tempConfig.question = document.getElementById('edit-question').value;
-    tempConfig.answer = document.getElementById('edit-answer').value;
-
-    // Visual Preview
-    document.getElementById('preview-title').innerText = content || "Titre...";
-    document.getElementById('preview-sub').innerText = sub || "Détails...";
-}
-
-// 4. SAUVEGARDER LE JOUR
+// 4. SAUVEGARDER
 function saveCurrentDay() {
-    // 1. Trouve l'index si existe
-    const index = calendarData.findIndex(d => d.day === currentEditDay);
+    // Récupérer valeurs
+    currentConfig.gameType = document.getElementById('edit-gameType').value;
+    currentConfig.question = document.getElementById('edit-question').value;
+    currentConfig.answer = document.getElementById('edit-answer').value;
     
-    if(index >= 0) {
-        calendarData[index] = JSON.parse(JSON.stringify(tempConfig));
-    } else {
-        calendarData.push(JSON.parse(JSON.stringify(tempConfig)));
-    }
-    
-    // Feedback visuel
+    currentConfig.reward.type = document.getElementById('edit-rewardType').value;
+    currentConfig.reward.content = document.getElementById('edit-content').value;
+    currentConfig.reward.text = document.getElementById('edit-subtext').value;
+
+    // Save in array
+    const idx = calendarData.findIndex(d => d.day === currentDayIndex);
+    if(idx >= 0) calendarData[idx] = currentConfig;
+    else calendarData.push(currentConfig);
+
+    // Feedback
     renderAdminGrid();
-    closeDrawer();
-    initCalendar(); // Rafraichir le site derrière
+    initCalendar(); // Update site derriere
     
-    // Petit flash vert
-    const btn = document.querySelector('.save-btn');
-    const originalText = btn.innerText;
+    const btn = document.querySelector('.save-day-btn');
+    const oldText = btn.innerText;
     btn.innerText = "Sauvegardé !";
     btn.style.background = "#15803d";
-    setTimeout(() => {
-        btn.innerText = originalText;
-        btn.style.background = "#22c55e";
-    }, 1000);
+    setTimeout(() => { btn.innerText = oldText; btn.style.background = "#22c55e"; }, 1000);
 }
 
-// 5. EXPORT FINAL
+// 5. EXPORT
 function exportData() {
-    const fileContent = `/* CONFIGURATION GÉNÉRÉE PAR L'ADMIN */\nconst calendarData = ${JSON.stringify(calendarData, null, 4)};\n\nconst START_MONTH = 0;\nconst START_YEAR = 2026;`;
+    const fileContent = `/* CONFIG GENEREE */\nconst calendarData = ${JSON.stringify(calendarData, null, 4)};\n\nconst START_MONTH = 0;\nconst START_YEAR = 2026;`;
     const blob = new Blob([fileContent], { type: "text/javascript" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "data.js";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "data.js";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
 function resetProgress() {
-    if(confirm("Effacer toutes les cases ouvertes ?")) {
-        localStorage.clear();
-        location.reload();
-    }
+    if(confirm("Tout effacer ?")) { localStorage.clear(); location.reload(); }
 }
 
-// INIT
+// Start
 initCalendar();
