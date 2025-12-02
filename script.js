@@ -122,14 +122,23 @@ function initSnow() {
     const container = document.getElementById('snow-container');
     if(!container) return;
     container.innerHTML = '';
-    for(let i=0; i<20; i++) { 
+    // On remet 30 flocons car le PC le supporte bien sans le flou
+    for(let i=0; i<30; i++) { 
         const fl = document.createElement('div');
         fl.className = 'snowflake';
-        fl.innerText = '❄';
+        fl.innerText = '❄'; // Flocon
         fl.style.left = Math.random() * 100 + 'vw';
-        fl.style.fontSize = (Math.random() * 10 + 10) + 'px';
-        fl.style.animationDuration = (Math.random() * 5 + 8) + 's';
+        // Tailles variées
+        fl.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        // Vitesses variées
+        fl.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
+        // Délais variés
         fl.style.animationDelay = (Math.random() * 5) + 's';
+        
+        // COULEUR : Bleu pâle aléatoire pour varier
+        const blueTone = Math.floor(Math.random() * 50 + 200);
+        fl.style.color = `rgb(${blueTone}, 255, 255)`;
+        
         container.appendChild(fl);
     }
 }
