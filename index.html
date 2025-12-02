@@ -1,35 +1,100 @@
-<button class="admin-btn" onclick="openAdmin()">⚙️</button>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Jours d'Hiver</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="background-gradient"></div>
+    <div id="snow-container"></div> <div class="main-container">
+        <header>
+            <h1>En attendant ton retour</h1>
+            <p class="subtitle">Une pensée, un souvenir ou une surprise pour chaque jour.</p>
+        </header>
+
+        <div class="calendar-wrapper">
+            <div class="calendar-grid" id="grid">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-window">
+            <button class="close-btn" onclick="closeModal()">
+                <i data-lucide="x"></i>
+            </button>
+            
+            <div class="modal-content">
+                <div id="game-section">
+                    <div class="icon-badge"><i data-lucide="gamepad-2"></i></div>
+                    <h2 id="modal-title">Titre</h2>
+                    <p id="modal-desc">Description</p>
+                    
+                    <div id="interaction-area"></div>
+                    
+                    <div id="feedback-msg"></div>
+                </div>
+
+                <div id="reward-section" class="hidden">
+                    <div class="icon-badge gold"><i data-lucide="heart"></i></div>
+                    <h2>Bravo mon cœur</h2>
+                    <div id="reward-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="admin-btn" onclick="openAdmin()" title="Ouvrir l'éditeur">⚙️</button>
 
     <div id="admin-interface" class="hidden">
         
         <div id="admin-login" class="admin-panel">
             <div class="admin-login">
-                <h2>Zone Secrète</h2>
-                <p>Entre le mot de passe pour modifier le calendrier</p>
-                <input type="password" id="admin-pass" class="pc-input" placeholder="Mot de passe">
+                <h2 style="font-family:'Playfair Display'">Zone Secrète</h2>
+                <p style="opacity:0.7; margin-bottom:20px">Entre le mot de passe pour modifier le calendrier</p>
+                
+                <input type="password" id="admin-pass" class="pc-input" placeholder="Mot de passe..." style="max-width:300px">
+                <br>
                 <button class="pc-btn" onclick="checkAdmin()">Entrer</button>
-                <p id="admin-error" class="error-txt"></p>
-                <button onclick="closeAdmin()" style="margin-top:20px; background:none; border:none; color:white; opacity:0.5; cursor:pointer">Retour</button>
+                
+                <p id="admin-error" class="feedback-msg"></p>
+                <button onclick="closeAdmin()" style="margin-top:30px; background:none; border:none; color:white; opacity:0.4; cursor:pointer; text-decoration:underline">Retour au site</button>
             </div>
         </div>
 
         <div id="admin-editor" class="admin-panel hidden">
-            <header style="display:flex; justify-content:space-between; width:100%; max-width:800px; align-items:center">
-                <h2>Éditeur du Calendrier</h2>
-                <button onclick="closeAdmin()" class="pc-btn" style="background:#f87171">Fermer</button>
+            <header style="display:flex; justify-content:space-between; width:100%; max-width:800px; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0">Éditeur du Calendrier</h2>
+                <button onclick="closeAdmin()" class="pc-btn" style="background:#f87171; color:white; padding:8px 15px;">Fermer</button>
             </header>
             
             <div id="editor-list" class="editor-container">
                 </div>
 
             <div class="save-bar">
-                <button class="pc-btn" onclick="saveChanges()" style="background:#4ade80; color:#064e3b">💾 Télécharger la nouvelle config</button>
+                <button class="pc-btn" onclick="saveChanges()" style="background:#4ade80; color:#064e3b; font-size:1.1rem; padding:12px 40px;">
+                    💾 Télécharger la nouvelle config (data.js)
+                </button>
             </div>
         </div>
     </div>
 
     <script src="data.js"></script>
     <script src="script.js"></script>
-    <script>lucide.createIcons();</script>
+    
+    <script>
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    </script>
 </body>
 </html>
