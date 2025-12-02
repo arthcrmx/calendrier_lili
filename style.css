@@ -1,162 +1,189 @@
 :root {
-    --primary: #a8edea;
-    --secondary: #fed6e3;
-    --glass: rgba(255, 255, 255, 0.1);
-    --glass-hover: rgba(255, 255, 255, 0.2);
-    --text: #ffffff;
+    --bg-dark: #0f172a;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-hover: rgba(255, 255, 255, 0.15);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f8fafc;
+    --gold: #fbbf24;
+    --accent: #38bdf8;
 }
 
 body {
     margin: 0;
-    font-family: 'Outfit', sans-serif;
-    background: radial-gradient(circle at center, #2b32b2, #1488cc);
+    height: 100vh;
+    font-family: 'Montserrat', sans-serif;
     color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden; /* Pas de scroll inutile sur PC */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Effet Neige (CSS pur) */
-.background {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-    pointer-events: none;
+/* Fond Élégant */
+.background-gradient {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% -20%, #334155, #0f172a 80%);
+    z-index: -2;
 }
 
-/* Grille */
-.calendar-container {
+.main-container {
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    z-index: 1;
+    animation: fadeIn 1s ease-out;
+}
+
+header { margin-bottom: 40px; }
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    margin: 0;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    background: linear-gradient(to right, #fff, #cbd5e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.7;
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+/* GRILLE ORDI */
+.calendar-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.calendar-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 15px;
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
+    grid-template-columns: repeat(6, 1fr); /* 6 colonnes pour 30 jours */
+    gap: 20px;
+    width: 900px; /* Largeur fixe propre */
 }
 
 .day-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 16px;
     aspect-ratio: 1;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     overflow: hidden;
 }
 
+/* Interaction Souris (Hover) */
 .day-card:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-10px) scale(1.05);
     background: var(--glass-hover);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
 }
+.day-card:hover .day-icon { transform: scale(1.2); color: var(--accent); }
 
-.day-card.locked {
-    opacity: 0.6;
-    cursor: not-allowed;
-    filter: grayscale(0.8);
-}
+.day-card.locked { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
+.day-card.locked:hover { transform: none; box-shadow: none; }
 
-.day-number {
+.day-card.done { border-color: var(--gold); background: rgba(251, 191, 36, 0.05); }
+.day-card.done .day-num { color: var(--gold); }
+
+.day-num {
+    font-family: 'Playfair Display', serif;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
+.day-icon { transition: transform 0.3s, color 0.3s; color: rgba(255,255,255,0.6); }
 
-.day-icon {
-    margin-top: 5px;
-}
-
-/* Modale & Jeux */
+/* MODALE (Popup) */
 .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0; pointer-events: none;
     transition: opacity 0.3s;
     z-index: 100;
 }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
 
-.modal-overlay.active {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.modal-content {
-    background: rgba(30, 30, 50, 0.9);
+.modal-window {
+    background: #1e293b;
+    width: 500px;
     padding: 40px;
-    border-radius: 24px;
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    position: relative;
     transform: scale(0.9);
     transition: transform 0.3s;
-}
-
-.modal-overlay.active .modal-content {
-    transform: scale(1);
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px; right: 15px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-/* Interface des Jeux */
-input[type="text"], input[type="number"] {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-    font-size: 1.1rem;
-    width: 80%;
-    margin: 15px 0;
     text-align: center;
 }
+.modal-overlay.active .modal-window { transform: scale(1); }
 
-button.game-btn {
-    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+.close-btn {
+    position: absolute; top: 15px; right: 15px;
+    background: none; border: none; color: white;
+    cursor: pointer; opacity: 0.5; transition: 0.2s;
+}
+.close-btn:hover { opacity: 1; transform: rotate(90deg); }
+
+.icon-badge {
+    width: 60px; height: 60px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+}
+.icon-badge.gold { color: var(--gold); background: rgba(251, 191, 36, 0.1); }
+
+/* Inputs Ordi */
+input.pc-input {
+    width: 80%;
+    padding: 12px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+input.pc-input:focus { outline: none; border-color: var(--accent); }
+
+button.pc-btn {
+    padding: 10px 30px;
+    background: var(--accent);
     border: none;
-    padding: 12px 30px;
-    border-radius: 50px;
-    color: #333;
+    border-radius: 6px;
+    color: #0f172a;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: 0.2s;
 }
-
-button.game-btn:hover {
-    transform: scale(1.05);
-}
+button.pc-btn:hover { background: #fff; }
 
 .hidden { display: none; }
+.feedback-msg { min-height: 20px; margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: #f87171; }
 
-.feedback {
-    min-height: 20px;
-    font-weight: bold;
-    margin-top: 10px;
-    color: #ff9a9e;
-}
+/* Contenu Média */
+#reward-display img { max-width: 100%; border-radius: 8px; margin-top: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 8px; overflow: hidden; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-/* Images & Vidéos dans la récompense */
-#reward-content img, #reward-content iframe {
-    max-width: 100%;
-    border-radius: 12px;
-    margin-top: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+/* Neige PC */
+.snowflake { position: fixed; top: -10px; color: white; opacity: 0.6; animation: fall linear infinite; pointer-events: none; }
+@keyframes fall { to { transform: translateY(105vh); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
