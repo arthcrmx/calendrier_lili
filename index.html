@@ -14,11 +14,9 @@
 <body>
 
     <div class="background-snow-day"></div>
-    <div id="snow-container"></div>
-
+    
     <div class="side-deco side-left"></div>
     <div class="side-deco side-right"></div>
-
 
     <div class="main-container">
         <header>
@@ -60,8 +58,7 @@
         <div id="admin-login" class="admin-panel">
             <div class="admin-login-box">
                 <h2>Zone Secrète 🎅</h2>
-                <p>Mot de passe du Père Noël :</p>
-                <input type="password" id="admin-pass" class="pc-input dark-input" placeholder="...">
+                <input type="password" id="admin-pass" class="pc-input dark-input" placeholder="Mot de passe">
                 <button class="pc-btn festive-btn" onclick="checkAdmin()">Entrer</button>
                 <p id="admin-error" class="feedback-msg"></p>
                 <button onclick="closeAdmin()" class="close-admin-txt">Retour</button>
@@ -70,8 +67,11 @@
 
         <div id="admin-editor" class="admin-panel hidden">
             <header class="admin-header">
-                <h2>Éditeur du Calendrier</h2>
-                <button onclick="closeAdmin()" class="pc-btn close-red-btn">Fermer</button>
+                <h2>Éditeur</h2>
+                <div>
+                    <button onclick="resetCalendar()" class="pc-btn" style="background:#555; font-size:0.8rem; margin-right:10px">⚠️ Tout Refermer</button>
+                    <button onclick="closeAdmin()" class="pc-btn close-red-btn">Fermer</button>
+                </div>
             </header>
             <div id="editor-list" class="editor-container"></div>
             <div class="save-bar">
