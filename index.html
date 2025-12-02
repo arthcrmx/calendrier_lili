@@ -1,55 +1,29 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier pour passer le temps</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<button class="admin-btn" onclick="openAdmin()">⚙️</button>
 
-    <div class="background-gradient"></div>
-    <div id="snow-container"></div>
-
-    <div class="main-container">
-        <header>
-            <h1>En attendant le retour de ton homme parfait</h1>
-            <p class="subtitle">Calendrier pour que l'attente soit plus fun</p>
-        </header>
-
-        <div class="calendar-wrapper">
-            <div class="calendar-grid" id="grid">
-                </div>
+    <div id="admin-interface" class="hidden">
+        
+        <div id="admin-login" class="admin-panel">
+            <div class="admin-login">
+                <h2>Zone Secrète</h2>
+                <p>Entre le mot de passe pour modifier le calendrier</p>
+                <input type="password" id="admin-pass" class="pc-input" placeholder="Mot de passe">
+                <button class="pc-btn" onclick="checkAdmin()">Entrer</button>
+                <p id="admin-error" class="error-txt"></p>
+                <button onclick="closeAdmin()" style="margin-top:20px; background:none; border:none; color:white; opacity:0.5; cursor:pointer">Retour</button>
+            </div>
         </div>
-    </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-window">
-            <button class="close-btn" onclick="closeModal()">
-                <i data-lucide="x"></i>
-            </button>
+        <div id="admin-editor" class="admin-panel hidden">
+            <header style="display:flex; justify-content:space-between; width:100%; max-width:800px; align-items:center">
+                <h2>Éditeur du Calendrier</h2>
+                <button onclick="closeAdmin()" class="pc-btn" style="background:#f87171">Fermer</button>
+            </header>
             
-            <div class="modal-content">
-                <div id="game-section">
-                    <div class="icon-badge"><i data-lucide="gamepad-2"></i></div>
-                    <h2 id="modal-title">Titre</h2>
-                    <p id="modal-desc">Description</p>
-                    
-                    <div id="interaction-area"></div>
-                    <div id="feedback-msg"></div>
+            <div id="editor-list" class="editor-container">
                 </div>
 
-                <div id="reward-section" class="hidden">
-                    <div class="icon-badge gold"><i data-lucide="heart"></i></div>
-                    <h2>Bravo mon cœur</h2>
-                    <div id="reward-display"></div>
-                </div>
+            <div class="save-bar">
+                <button class="pc-btn" onclick="saveChanges()" style="background:#4ade80; color:#064e3b">💾 Télécharger la nouvelle config</button>
             </div>
         </div>
     </div>
