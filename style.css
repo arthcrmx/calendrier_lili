@@ -1,0 +1,162 @@
+:root {
+    --primary: #a8edea;
+    --secondary: #fed6e3;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-hover: rgba(255, 255, 255, 0.2);
+    --text: #ffffff;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background: radial-gradient(circle at center, #2b32b2, #1488cc);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Effet Neige (CSS pur) */
+.background {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Grille */
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.day-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.day-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    background: var(--glass-hover);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.day-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+}
+
+.day-number {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.day-icon {
+    margin-top: 5px;
+}
+
+/* Modale & Jeux */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 100;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: rgba(30, 30, 50, 0.9);
+    padding: 40px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px; right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* Interface des Jeux */
+input[type="text"], input[type="number"] {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    width: 80%;
+    margin: 15px 0;
+    text-align: center;
+}
+
+button.game-btn {
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button.game-btn:hover {
+    transform: scale(1.05);
+}
+
+.hidden { display: none; }
+
+.feedback {
+    min-height: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #ff9a9e;
+}
+
+/* Images & Vidéos dans la récompense */
+#reward-content img, #reward-content iframe {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
