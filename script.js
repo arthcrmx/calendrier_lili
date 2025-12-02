@@ -1,4 +1,3 @@
-/* --- VARIABLES GLOBALES --- */
 const grid = document.getElementById('grid');
 const modal = document.getElementById('modal');
 const gameSection = document.getElementById('game-section');
@@ -8,6 +7,14 @@ const feedback = document.getElementById('feedback-msg');
 const today = new Date();
 const TARGET_MONTH = 0; // Janvier
 const TARGET_YEAR = 2026;
+
+/* --- FONCTION DE RESET (La nouveauté) --- */
+function resetCalendar() {
+    if(confirm("Tu es sûr de vouloir TOUT refermer ? Ça effacera ta progression.")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
 
 /* --- ADMIN --- */
 function openAdmin() {
@@ -22,7 +29,6 @@ function closeAdmin() {
 
 function checkAdmin() {
     const pass = document.getElementById('admin-pass').value;
-    // MOT DE PASSE : Change "amour" par ce que tu veux
     if(pass === "amour") {
         document.getElementById('admin-login').classList.add('hidden');
         document.getElementById('admin-editor').classList.remove('hidden');
@@ -32,7 +38,6 @@ function checkAdmin() {
     }
 }
 
-/* GÉNÉRATEUR D'ÉDITEUR (La partie magique) */
 function loadEditor() {
     const list = document.getElementById('editor-list');
     list.innerHTML = '';
@@ -42,45 +47,23 @@ function loadEditor() {
         div.className = 'day-editor';
         div.innerHTML = `
             <h3>Jour ${dayData.day}</h3>
-            
-            <div class="form-group">
-                <label>Type de Jeu</label>
-                <select onchange="updateRow(${index}, 'gameType', this.value)">
-                    <option value="none" ${dayData.gameType === 'none' ? 'selected' : ''}>Aucun (Cadeau direct)</option>
-                    <option value="quiz" ${dayData.gameType === 'quiz' ? 'selected' : ''}>Quiz (Question/Réponse)</option>
+            <div style="display:flex; gap:10px; margin-bottom:10px">
+                <select style="padding:5px" onchange="updateRow(${index}, 'gameType', this.value)">
+                    <option value="none" ${dayData.gameType === 'none' ? 'selected' : ''}>Cadeau Direct</option>
+                    <option value="quiz" ${dayData.gameType === 'quiz' ? 'selected' : ''}>Quiz</option>
                     <option value="code" ${dayData.gameType === 'code' ? 'selected' : ''}>Code Secret</option>
                 </select>
+                <input type="text" style="flex:1; padding:5px" value="${dayData.question || ''}" placeholder="Question..." onchange="updateRow(${index}, 'question', this.value)">
+                <input type="text" style="flex:1; padding:5px" value="${dayData.answer || ''}" placeholder="Réponse..." onchange="updateRow(${index}, 'answer', this.value)">
             </div>
-
-            <div class="form-group">
-                <label>Question / Indice</label>
-                <input type="text" value="${dayData.question || ''}" onchange="updateRow(${index}, 'question', this.value)" placeholder="La question...">
-            </div>
-            <div class="form-group">
-                <label>Réponse attendue</label>
-                <input type="text" value="${dayData.answer || ''}" onchange="updateRow(${index}, 'answer', this.value)" placeholder="La réponse...">
-            </div>
-
-            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
-
-            <div class="form-group">
-                <label>Type de Récompense</label>
-                <select onchange="updateRow(${index}, 'rewardType', this.value)">
-                    <option value="text" ${dayData.reward.type === 'text' ? 'selected' : ''}>Texte Simple</option>
-                    <option value="image" ${dayData.reward.type === 'image' ? 'selected' : ''}>Image (Lien)</option>
-                    <option value="video" ${dayData.reward.type === 'video' ? 'selected' : ''}>Vidéo YouTube</option>
-                    <option value="coupon" ${dayData.reward.type === 'coupon' ? 'selected' : ''}>🎫 BON POUR (Ticket d'Or)</option>
+            <div style="display:flex; gap:10px">
+                <select style="padding:5px" onchange="updateRow(${index}, 'rewardType', this.value)">
+                    <option value="text" ${dayData.reward.type === 'text' ? 'selected' : ''}>Texte</option>
+                    <option value="image" ${dayData.reward.type === 'image' ? 'selected' : ''}>Image</option>
+                    <option value="video" ${dayData.reward.type === 'video' ? 'selected' : ''}>Vidéo</option>
+                    <option value="coupon" ${dayData.reward.type === 'coupon' ? 'selected' : ''}>BON (Ticket)</option>
                 </select>
-            </div>
-
-            <div class="form-group">
-                <label>Contenu (Texte, Lien Image, ID Youtube ou Titre du Bon)</label>
-                <input type="text" value="${dayData.reward.content || ''}" onchange="updateRow(${index}, 'rewardContent', this.value)">
-            </div>
-            
-            <div class="form-group">
-                <label>Petit message en dessous (optionnel)</label>
-                <input type="text" value="${dayData.reward.text || ''}" onchange="updateRow(${index}, 'rewardText', this.value)">
+                <input type="text" style="flex:1; padding:5px" value="${dayData.reward.content || ''}" placeholder="Contenu/Titre..." onchange="updateRow(${index}, 'rewardContent', this.value)">
             </div>
         `;
         list.appendChild(div);
@@ -88,61 +71,26 @@ function loadEditor() {
 }
 
 function updateRow(index, field, value) {
-    // Met à jour la variable locale calendarData
     if(field === 'gameType') calendarData[index].gameType = value;
     if(field === 'question') calendarData[index].question = value;
     if(field === 'answer') calendarData[index].answer = value;
-    
-    // Pour la récompense, c'est un sous-objet
     if(field === 'rewardType') calendarData[index].reward.type = value;
     if(field === 'rewardContent') calendarData[index].reward.content = value;
-    if(field === 'rewardText') calendarData[index].reward.text = value;
 }
 
 function saveChanges() {
-    // Génère le contenu du fichier data.js
-    const fileContent = `/* CONFIGURATION GÉNÉRÉE PAR L'ADMIN */\nconst calendarData = ${JSON.stringify(calendarData, null, 4)};\n\nconst START_MONTH = 0;\nconst START_YEAR = 2026;`;
-    
-    // Crée un fichier téléchargeable
+    const fileContent = `/* CONFIG GENEREE */\nconst calendarData = ${JSON.stringify(calendarData, null, 4)};\n\nconst START_MONTH = 0;\nconst START_YEAR = 2026;`;
     const blob = new Blob([fileContent], { type: "text/javascript" });
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = "data.js";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    
-    alert("Fichier 'data.js' téléchargé ! \n⚠️ MAINTENANT : Prends ce fichier et remplace l'ancien dans ton dossier ou sur GitHub !");
+    alert("Sauvegardé ! Remplace le fichier data.js");
 }
 
-/* --- LOGIQUE CALENDRIER CLASSIQUE --- */
-
-function initSnow() {
-    const container = document.getElementById('snow-container');
-    if(!container) return;
-    container.innerHTML = '';
-    // On remet 30 flocons car le PC le supporte bien sans le flou
-    for(let i=0; i<30; i++) { 
-        const fl = document.createElement('div');
-        fl.className = 'snowflake';
-        fl.innerText = '❄'; // Flocon
-        fl.style.left = Math.random() * 100 + 'vw';
-        // Tailles variées
-        fl.style.fontSize = (Math.random() * 15 + 10) + 'px';
-        // Vitesses variées
-        fl.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
-        // Délais variés
-        fl.style.animationDelay = (Math.random() * 5) + 's';
-        
-        // COULEUR : Bleu pâle aléatoire pour varier
-        const blueTone = Math.floor(Math.random() * 50 + 200);
-        fl.style.color = `rgb(${blueTone}, 255, 255)`;
-        
-        container.appendChild(fl);
-    }
-}
-
+/* --- CALENDRIER --- */
 function initCalendar() {
     grid.innerHTML = '';
     calendarData.sort((a,b) => a.day - b.day);
@@ -194,16 +142,14 @@ function openModal(data, isReplay) {
     rewardSection.classList.add('hidden');
     
     if(data.gameType === 'quiz' || data.gameType === 'code') {
-        title.innerText = data.gameType === 'quiz' ? "Petite Question" : "Code Secret";
+        title.innerText = data.gameType === 'quiz' ? "Question" : "Code Secret";
         desc.innerText = data.question;
 
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'pc-input';
-        input.placeholder = 'Votre réponse...';
-        input.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") validate(input.value, data.answer, data);
-        });
+        input.placeholder = 'Réponse...';
+        input.addEventListener("keypress", (e) => { if(e.key==="Enter") validate(input.value, data.answer, data); });
 
         const btn = document.createElement('button');
         btn.className = 'pc-btn';
@@ -220,37 +166,26 @@ function validate(val, correct, data) {
         markAsDone(data.day);
         showReward(data.reward);
     } else {
-        feedback.innerText = "Ce n'est pas ça... ❤️";
-        const input = document.querySelector('.pc-input');
-        if(input) input.style.borderColor = '#f87171';
+        feedback.innerText = "Non, essaie encore ❤️";
     }
 }
 
 function showReward(reward) {
     gameSection.classList.add('hidden');
     rewardSection.classList.remove('hidden');
-
     const display = document.getElementById('reward-display');
-    let html = '';
-
+    
     if(reward.type === 'coupon') {
-        // AFFICHAGE SPÉCIAL POUR LES BONS
-        html = `
-        <div class="coupon-ticket">
-            <div class="coupon-header">Bon Cadeau</div>
-            <div class="coupon-title">${reward.content}</div>
-            <div class="coupon-sub">${reward.text || "Valable dès mon retour ❤️"}</div>
+        display.innerHTML = `
+        <div style="background:#fffaf0; border:2px dashed #d4af37; padding:20px; border-radius:10px; margin-top:20px; color:#5a4a42">
+            <div style="color:#d4af37; font-weight:bold; letter-spacing:2px; border-bottom:1px dashed #d4af37; display:inline-block; margin-bottom:10px">BON CADEAU</div>
+            <div style="font-family:'Playfair Display'; font-size:2rem; margin:10px 0">${reward.content}</div>
+            <div style="font-style:italic; color:#c0392b">${reward.text || ''}</div>
         </div>`;
-    } 
-    else if(reward.type === 'text') {
-        html = `<p style="font-size:1.2rem; line-height:1.6; margin-top:20px;">${reward.content}</p>`;
-    } else if (reward.type === 'image') {
-        html = `<img src="${reward.content}" alt="Surprise"><p style="margin-top:15px; opacity:0.8">${reward.text || ''}</p>`;
-    } else if (reward.type === 'video') {
-        html = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${reward.content}" frameborder="0" allowfullscreen></iframe></div><p style="margin-top:15px; opacity:0.8">${reward.text || ''}</p>`;
+    } else {
+        display.innerHTML = `<p style="font-size:1.2rem; margin-top:20px">${reward.content}</p>`;
+        if(reward.type === 'image') display.innerHTML = `<img src="${reward.content}" style="max-width:100%; border-radius:10px; margin-top:15px">`;
     }
-
-    display.innerHTML = html;
 }
 
 function markAsDone(day) {
@@ -264,5 +199,5 @@ function closeModal() {
 
 document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
 
-initSnow();
+// Démarrage sans neige
 initCalendar();
