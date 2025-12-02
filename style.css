@@ -1,192 +1,100 @@
-:root {
-    --bg-dark: #0f172a;
-    --glass: rgba(255, 255, 255, 0.08); /* Fond semi-transparent sans flou */
-    --glass-hover: rgba(255, 255, 255, 0.15);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #f8fafc;
-    --gold: #fbbf24;
-    --accent: #38bdf8;
-}
+/* --- LE RESTE DU CSS D'AVANT RESTE PAREIL --- */
+/* (Garde tout le CSS précédent, ajoute juste ça en bas) */
 
-body {
-    margin: 0;
-    height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-    color: var(--text);
-    overflow: hidden; /* Pas de scroll inutile sur PC */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Fond Élégant */
-.background-gradient {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at 50% -20%, #334155, #0f172a 80%);
-    z-index: -2;
-}
-
-.main-container {
-    text-align: center;
-    width: 100%;
-    max-width: 1200px;
-    z-index: 1;
-    animation: fadeIn 1s ease-out;
-}
-
-header { margin-bottom: 30px; }
-
-h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    margin: 0;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    background: linear-gradient(to right, #fff, #cbd5e1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    opacity: 0.7;
-    margin-top: 10px;
-    letter-spacing: 1px;
-}
-
-/* GRILLE ORDI */
-.calendar-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 colonnes */
-    gap: 15px;
-    width: 850px; 
-}
-
-.day-card {
-    aspect-ratio: 1;
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    /* OPTIMISATION : Pas de backdrop-filter ici */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+/* STYLE DES BONS (TICKETS D'OR) */
+.coupon-ticket {
+    background: linear-gradient(135deg, #fffcdc 0%, #d9a7c7 100%); /* Fond nacré/doré */
+    border: 2px dashed #b8860b;
+    padding: 20px;
+    border-radius: 10px;
+    color: #5a4a42;
     position: relative;
-    overflow: hidden;
-    
-    /* Optimisation GPU */
-    will-change: transform;
-    transition: transform 0.2s ease-out, background 0.2s;
-}
-
-/* Interaction Souris (Hover) */
-.day-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    background: var(--glass-hover);
-    border-color: rgba(255,255,255,0.3);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.day-card.locked { opacity: 0.3; cursor: default; }
-.day-card.locked:hover { transform: none; box-shadow: none; background: var(--glass); }
-
-.day-card.done { border-color: var(--gold); background: rgba(251, 191, 36, 0.05); }
-.day-card.done .day-num { color: var(--gold); }
-
-.day-num {
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     font-family: 'Playfair Display', serif;
+    text-align: center;
+}
+
+.coupon-header {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: #b8860b;
+    border-bottom: 1px dashed #b8860b;
+    padding-bottom: 5px;
+}
+
+.coupon-title {
     font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-.day-icon { opacity: 0.6; transition: 0.2s; }
-.day-card:hover .day-icon { opacity: 1; color: var(--accent); }
-
-/* MODALE (Popup) - Ici on garde le flou car c'est un seul élément */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px); /* Flou léger */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 100;
-}
-.modal-overlay.active { opacity: 1; pointer-events: all; }
-
-.modal-window {
-    background: #1e293b;
-    width: 480px;
-    padding: 40px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    position: relative;
-    transform: scale(0.95);
-    transition: transform 0.3s;
-    text-align: center;
-}
-.modal-overlay.active .modal-window { transform: scale(1); }
-
-.close-btn {
-    position: absolute; top: 15px; right: 15px;
-    background: none; border: none; color: white;
-    cursor: pointer; opacity: 0.5; transition: 0.2s;
-}
-.close-btn:hover { opacity: 1; }
-
-.icon-badge {
-    width: 60px; height: 60px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-    margin: 0 auto 20px;
-    display: flex; align-items: center; justify-content: center;
-}
-.icon-badge.gold { color: var(--gold); background: rgba(251, 191, 36, 0.1); }
-
-/* Inputs Ordi */
-input.pc-input {
-    width: 80%;
-    padding: 12px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 15px;
-    text-align: center;
-}
-input.pc-input:focus { outline: none; border-color: var(--accent); }
-
-button.pc-btn {
-    padding: 10px 30px;
-    background: var(--accent);
-    border: none;
-    border-radius: 6px;
-    color: #0f172a;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+    margin: 10px 0;
 }
-button.pc-btn:hover { background: #fff; }
 
-.hidden { display: none; }
-.feedback-msg { min-height: 20px; margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: #f87171; }
+.coupon-sub {
+    font-style: italic;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
 
-/* Contenu Média */
-#reward-display img { max-width: 100%; border-radius: 8px; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-.video-container { position: relative; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 8px; overflow: hidden; }
-.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+/* INTERFACE ADMIN */
+.admin-btn {
+    position: fixed;
+    bottom: 10px; right: 10px;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.3);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    z-index: 1000;
+}
+.admin-btn:hover { color: white; background: rgba(255,255,255,0.2); }
 
-/* Neige légère */
-.snowflake { position: fixed; top: -10px; color: white; opacity: 0.4; animation: fall linear infinite; pointer-events: none; }
-@keyframes fall { to { transform: translateY(105vh); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.admin-panel {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #0f172a;
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+    color: white;
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.admin-login {
+    margin-top: 20vh;
+    text-align: center;
+}
+
+.editor-container {
+    width: 100%; max-width: 800px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.day-editor {
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+}
+
+.day-editor h3 { margin: 0 0 10px; }
+.form-group { margin-bottom: 10px; display: flex; flex-direction: column; text-align: left; }
+.form-group label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px; }
+.form-group input, .form-group textarea, .form-group select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; padding: 8px; border-radius: 5px;
+}
+
+.save-bar {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: #0f172a; padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; justify-content: center; gap: 20px;
+}
