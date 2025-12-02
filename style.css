@@ -1,100 +1,227 @@
-/* --- LE RESTE DU CSS D'AVANT RESTE PAREIL --- */
-/* (Garde tout le CSS précédent, ajoute juste ça en bas) */
-
-/* STYLE DES BONS (TICKETS D'OR) */
-.coupon-ticket {
-    background: linear-gradient(135deg, #fffcdc 0%, #d9a7c7 100%); /* Fond nacré/doré */
-    border: 2px dashed #b8860b;
-    padding: 20px;
-    border-radius: 10px;
-    color: #5a4a42;
-    position: relative;
-    margin-top: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    font-family: 'Playfair Display', serif;
-    text-align: center;
+:root {
+    /* NOUVELLE PALETTE : Thème Blanc/Hiver Mignon */
+    --bg-snow: #f0f8ff; /* Blanc bleuté */
+    --text-dark: #2c3e50; /* Bleu nuit pour le texte */
+    --text-soft: #546e7a;
+    
+    /* Verre version Jour : Plus opaque, bordures bleutées */
+    --glass-ice: rgba(255, 255, 255, 0.7);
+    --glass-ice-hover: rgba(255, 255, 255, 0.9);
+    --border-ice: rgba(176, 224, 230, 0.6); /* Bleu glacier */
+    
+    --gold: #d4af37;
+    --red-festive: #c0392b;
+    --green-festive: #27ae60;
+    --accent-blue: #3498db;
 }
 
-.coupon-header {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    color: #b8860b;
-    border-bottom: 1px dashed #b8860b;
-    padding-bottom: 5px;
+body {
+    margin: 0;
+    height: 100vh;
+    /* Police plus ronde et mignonne pour le texte courant */
+    font-family: 'Quicksand', 'Montserrat', sans-serif;
+    color: var(--text-dark);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.coupon-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.coupon-sub {
-    font-style: italic;
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-/* INTERFACE ADMIN */
-.admin-btn {
-    position: fixed;
-    bottom: 10px; right: 10px;
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.3);
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    z-index: 1000;
-}
-.admin-btn:hover { color: white; background: rgba(255,255,255,0.2); }
-
-.admin-panel {
+/* 1. LE FOND BLANC LUMINEUX */
+.background-snow-day {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #0f172a;
-    z-index: 2000;
-    padding: 20px;
-    overflow-y: auto;
-    color: white;
-    display: flex; flex-direction: column; align-items: center;
+    /* Dégradé du ciel bleu pâle vers la neige blanche */
+    background: linear-gradient(to bottom, #dceeff 0%, #f8fbff 40%, #ffffff 100%);
+    z-index: -5;
 }
 
-.admin-login {
-    margin-top: 20vh;
+/* 2. LES DÉCORATIONS LATÉRALES (SVG Intégrés) */
+.side-deco {
+    position: fixed;
+    bottom: 0;
+    width: 300px; /* Largeur des décos */
+    height: 70vh; /* Hauteur max */
+    z-index: -1; /* Derrière le calendrier */
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: contain;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.side-left {
+    left: -20px;
+    /* SVG Sapins + Maison */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Cg fill='%232c3e50' opacity='0.1'%3E%3Cpath d='M250 450h-30v-30h30z'/%3E%3C/g%3E%3Cg fill='%2327ae60'%3E%3Cpath d='M100 400L50 500h100zM200 350l-60 150h120zM150 300l-40 100h80z'/%3E%3C/g%3E%3Cg fill='%23c0392b'%3E%3Cpath d='M280 420h80v80h-80z'/%3E%3Cpath d='M280 420l40-40 40 40z' fill='%23e74c3c'/%3E%3C/g%3E%3Cpath fill='%23ecf0f1' d='M310 460h20v40h-20z'/%3E%3Cpath fill='%2334495e' d='M335 400h10v20h-10z'/%3E%3Cg fill='%23bdc3c7' opacity='0.6'%3E%3Ccircle cx='340' cy='390' r='5'/%3E%3Ccircle cx='345' cy='380' r='7'/%3E%3Ccircle cx='350' cy='370' r='9'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.side-right {
+    right: -20px;
+    /* SVG Sapins + Renne */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Cg fill='%2327ae60'%3E%3Cpath d='M400 400l-50 100h100zM300 350l-60 150h120z'/%3E%3C/g%3E%3Cg fill='%23d35400'%3E%3Cpath d='M150 430c0-20 20-30 40-30s40 10 40 30v70h-80v-70z'/%3E%3Cpath d='M170 430v70M210 430v70' stroke='%23e67e22' stroke-width='5'/%3E%3C/g%3E%3Cpath fill='%23d35400' d='M190 415c-15 0-25-10-25-20s5-15 25-15 25 5 25 15-10 20-25 20z'/%3E%3Cpath fill='%23c0392b' d='M190 410a5 5 0 1 0 0-10 5 5 0 0 0 0 10z'/%3E%3Cpath fill='none' stroke='%238d4004' stroke-width='4' stroke-linecap='round' d='M170 385l-20-20m0 0l-10 5m10-5l-5-10M210 385l20-20m0 0l10 5m-10-5l5-10'/%3E%3C/svg%3E");
+}
+
+
+.main-container {
     text-align: center;
+    width: 100%; max-width: 1100px;
+    z-index: 10; /* Devant les décos */
+    animation: fadeInUp 1s ease-out;
 }
 
-.editor-container {
-    width: 100%; max-width: 800px;
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 40px;
+header { margin-bottom: 30px; }
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; margin: 0;
+    /* Titre foncé et élégant */
+    color: var(--text-dark);
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
 }
 
-.day-editor {
-    background: rgba(0,0,0,0.3);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border-left: 4px solid var(--accent);
+.subtitle {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.3rem; color: var(--text-soft);
+    margin-top: 10px; font-weight: 600;
 }
 
-.day-editor h3 { margin: 0 0 10px; }
-.form-group { margin-bottom: 10px; display: flex; flex-direction: column; text-align: left; }
-.form-group label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px; }
-.form-group input, .form-group textarea, .form-group select {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white; padding: 8px; border-radius: 5px;
+/* GRILLE ET CARTES "GLAÇONS" */
+.calendar-wrapper { display: flex; justify-content: center; }
+.calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; width: 850px; }
+
+.day-card {
+    aspect-ratio: 1;
+    /* Style Glaçon : Fond blanc semi-opaque + bordure bleue */
+    background: var(--glass-ice);
+    border: 2px solid var(--border-ice);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(176, 224, 230, 0.3); /* Ombre bleue légère */
+    
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    will-change: transform; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.save-bar {
-    position: fixed; bottom: 0; left: 0; width: 100%;
-    background: #0f172a; padding: 15px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex; justify-content: center; gap: 20px;
+.day-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    background: var(--glass-ice-hover);
+    border-color: var(--accent-blue);
+    box-shadow: 0 15px 30px rgba(52, 152, 219, 0.2);
 }
+
+.day-card.locked { opacity: 0.6; cursor: default; background: rgba(236, 240, 241, 0.8); border-color: #bdc3c7; }
+.day-card.locked:hover { transform: none; box-shadow: none; }
+.day-card.locked .day-num { color: #95a5a6; }
+
+.day-card.done {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255, 248, 220, 0.8));
+}
+.day-card.done .day-num { color: var(--gold); }
+
+.day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700;
+    color: var(--text-dark); margin-bottom: 5px;
+}
+.day-icon { color: var(--text-soft); transition: 0.3s; }
+.day-card:hover .day-icon { color: var(--red-festive); transform: scale(1.1) rotate(-10deg); }
+
+
+/* MODALE (POPUP) STYLE JOUR */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(44, 62, 80, 0.4); /* Fond sombre semi-transparent */
+    backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+
+.modal-window {
+    background: #ffffff; /* Fond blanc pur */
+    width: 500px; padding: 40px; border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    position: relative; transform: scale(0.9); transition: transform 0.3s;
+    text-align: center; color: var(--text-dark);
+    border: 3px solid var(--border-ice);
+}
+.modal-overlay.active .modal-window { transform: scale(1); }
+
+.close-btn {
+    position: absolute; top: 15px; right: 15px; background: none; border: none;
+    color: var(--text-soft); cursor: pointer; font-size: 1.2rem; transition: 0.2s;
+}
+.close-btn:hover { color: var(--red-festive); transform: rotate(90deg); }
+
+.icon-badge {
+    width: 70px; height: 70px;
+    background: var(--bg-snow); color: var(--accent-blue);
+    border-radius: 50%; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+.icon-badge.gold { color: var(--gold); background: #fffbe6; }
+
+h2 { font-family: 'Playfair Display'; color: var(--text-dark); }
+p { font-family: 'Quicksand'; font-weight: 600; color: var(--text-soft); }
+
+/* INPUTS STYLE JOUR */
+input.pc-input {
+    width: 80%; padding: 14px;
+    background: var(--bg-snow); border: 2px solid var(--border-ice);
+    border-radius: 12px; color: var(--text-dark);
+    font-size: 1.1rem; text-align: center; font-family: 'Quicksand'; font-weight: 700;
+    outline: none; transition: 0.3s; margin-bottom: 20px;
+}
+input.pc-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1); }
+
+button.pc-btn {
+    padding: 12px 40px;
+    background: var(--accent-blue); border: none; border-radius: 50px;
+    color: white; font-weight: 700; font-family: 'Quicksand';
+    cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+button.pc-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4); }
+
+/* STYLE DES BONS (TICKET D'OR MIGNON) */
+.coupon-ticket {
+    background: linear-gradient(to right, #fffbf0, #ffe4e1);
+    border: 3px dashed var(--gold);
+    padding: 25px; border-radius: 15px;
+    color: #5a4a42; position: relative; margin-top: 25px;
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+    font-family: 'Playfair Display', serif;
+}
+.coupon-header { color: var(--gold); font-weight: 900; letter-spacing: 3px; border-bottom: 2px dashed var(--gold); display: inline-block; padding-bottom: 5px; }
+.coupon-title { font-size: 2.2rem; margin: 15px 0; color: var(--text-dark); }
+.coupon-sub { font-family: 'Quicksand'; font-weight: 600; color: var(--red-festive); }
+
+
+/* NEIGE BLEUE (Pour qu'elle se voie sur le blanc) */
+.snowflake {
+    position: fixed; top: -10px;
+    color: #afeeee; /* Bleu pâle */
+    opacity: 0.8; pointer-events: none;
+    text-shadow: 0 0 5px rgba(175, 238, 238, 0.5);
+}
+
+/* ADMIN PANEL (Adapté au thème clair) */
+.admin-btn { position: fixed; bottom: 15px; right: 15px; background: white; color: var(--text-dark); padding: 10px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: none; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+.admin-btn:hover { transform: rotate(45deg) scale(1.1); }
+
+.admin-panel { background: var(--bg-snow); color: var(--text-dark); }
+.admin-login-box, .editor-container { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 2px solid var(--border-ice); }
+.input.dark-input { background: var(--bg-snow); color: var(--text-dark); }
+.festive-btn { background: var(--red-festive); box-shadow: 0 5px 15px rgba(192, 57, 43, 0.3); }
+.close-red-btn { background: var(--red-festive); }
+.save-green-btn { background: var(--green-festive); }
+.day-editor { background: var(--bg-snow); border-left: 4px solid var(--accent-blue); border: 1px solid var(--border-ice); }
+.form-group input, .form-group select, .form-group textarea { background: white; border: 1px solid var(--border-ice); color: var(--text-dark); }
+.save-bar { background: white; border-top: 2px solid var(--border-ice); }
+
+/* ANIMATIONS */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fall { to { transform: translateY(105vh); } }
+.hidden { display: none; } .feedback-msg { min-height: 20px; margin-top: 10px; font-weight: 700; color: var(--red-festive); }
+#reward-display img, .video-container { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid white; }
