@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>30 Jours de Noël</title>
+    <title>30 Jours - Édition Premium</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -14,7 +14,6 @@
 <body>
 
     <div class="background-snow-day"></div>
-    
     <div class="side-deco side-left"></div>
     <div class="side-deco side-right"></div>
 
@@ -23,17 +22,14 @@
             <h1>En attendant Noël</h1>
             <p class="subtitle">Chaque jour une petite douceur pour toi.</p>
         </header>
-
         <div class="calendar-wrapper">
-            <div class="calendar-grid" id="grid">
-                </div>
+            <div class="calendar-grid" id="grid"></div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal">
         <div class="modal-window">
             <button class="close-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
-            
             <div class="modal-content">
                 <div id="game-section">
                     <div class="icon-badge"><i data-lucide="gift"></i></div>
@@ -42,7 +38,6 @@
                     <div id="interaction-area"></div>
                     <div id="feedback-msg"></div>
                 </div>
-
                 <div id="reward-section" class="hidden">
                     <div class="icon-badge gold"><i data-lucide="heart"></i></div>
                     <h2>C'est gagné !</h2>
@@ -52,30 +47,113 @@
         </div>
     </div>
 
-    <button class="admin-btn" onclick="openAdmin()" title="Ouvrir l'éditeur">⚙️</button>
+    <button class="admin-fab" onclick="toggleAdmin()">
+        <i data-lucide="settings-2"></i>
+    </button>
 
-    <div id="admin-interface" class="hidden">
-        <div id="admin-login" class="admin-panel">
-            <div class="admin-login-box">
-                <h2>Zone Secrète 🎅</h2>
-                <input type="password" id="admin-pass" class="pc-input dark-input" placeholder="Mot de passe">
-                <button class="pc-btn festive-btn" onclick="checkAdmin()">Entrer</button>
-                <p id="admin-error" class="feedback-msg"></p>
-                <button onclick="closeAdmin()" class="close-admin-txt">Retour</button>
-            </div>
+    <div id="admin-dashboard" class="admin-overlay hidden">
+        
+        <div id="admin-login-screen" class="admin-center-box">
+            <h2><i data-lucide="lock"></i> Accès Créateur</h2>
+            <input type="password" id="admin-pass" placeholder="Mot de passe..." onkeypress="handleLogin(event)">
+            <button onclick="checkAdmin()">Entrer</button>
+            <p id="login-error"></p>
         </div>
 
-        <div id="admin-editor" class="admin-panel hidden">
-            <header class="admin-header">
-                <h2>Éditeur</h2>
-                <div>
-                    <button onclick="resetCalendar()" class="pc-btn" style="background:#555; font-size:0.8rem; margin-right:10px">⚠️ Tout Refermer</button>
-                    <button onclick="closeAdmin()" class="pc-btn close-red-btn">Fermer</button>
+        <div id="admin-workspace" class="admin-workspace hidden">
+            <div class="admin-header">
+                <div class="brand">
+                    <i data-lucide="layout-grid"></i>
+                    <span>Studio de Création</span>
                 </div>
-            </header>
-            <div id="editor-list" class="editor-container"></div>
-            <div class="save-bar">
-                <button class="pc-btn save-green-btn" onclick="saveChanges()">💾 Télécharger la config</button>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="resetProgress()">🗑️ Reset Progression</button>
+                    <button class="btn-primary" onclick="exportData()">💾 Sauvegarder & Exporter</button>
+                    <button class="btn-close" onclick="toggleAdmin()"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+
+            <div class="admin-grid-view" id="admin-grid">
+                </div>
+
+            <div class="editor-drawer" id="editor-drawer">
+                <div class="drawer-header">
+                    <h3 id="drawer-title">Édition Jour 1</h3>
+                    <button onclick="closeDrawer()"><i data-lucide="x"></i></button>
+                </div>
+                
+                <div class="drawer-content">
+                    <div class="config-section">
+                        <label class="section-label">1. LE DÉFI (JEU)</label>
+                        <div class="type-selector" id="game-selector">
+                            <div class="type-card selected" onclick="setGameType('none', this)" data-val="none">
+                                <i data-lucide="gift"></i>
+                                <span>Cadeau Direct</span>
+                            </div>
+                            <div class="type-card" onclick="setGameType('quiz', this)" data-val="quiz">
+                                <i data-lucide="help-circle"></i>
+                                <span>Quiz</span>
+                            </div>
+                            <div class="type-card" onclick="setGameType('code', this)" data-val="code">
+                                <i data-lucide="key"></i>
+                                <span>Code Secret</span>
+                            </div>
+                        </div>
+
+                        <div id="game-fields" class="dynamic-fields hidden">
+                            <div class="field-group">
+                                <label>Question / Indice</label>
+                                <input type="text" id="edit-question" placeholder="Ex: Quelle est ma couleur préférée ?">
+                            </div>
+                            <div class="field-group">
+                                <label>Réponse attendue</label>
+                                <input type="text" id="edit-answer" placeholder="Ex: Bleu">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <label class="section-label">2. LA SURPRISE</label>
+                        <div class="type-selector" id="reward-selector">
+                            <div class="type-card" onclick="setRewardType('text', this)" data-val="text">
+                                <i data-lucide="align-left"></i><span>Texte</span>
+                            </div>
+                            <div class="type-card" onclick="setRewardType('image', this)" data-val="image">
+                                <i data-lucide="image"></i><span>Photo</span>
+                            </div>
+                            <div class="type-card" onclick="setRewardType('video', this)" data-val="video">
+                                <i data-lucide="youtube"></i><span>Vidéo</span>
+                            </div>
+                            <div class="type-card" onclick="setRewardType('coupon', this)" data-val="coupon">
+                                <i data-lucide="ticket"></i><span>Bon</span>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label id="content-label">Contenu</label>
+                            <input type="text" id="edit-content" placeholder="..." oninput="updatePreview()">
+                            <small id="helper-text" style="color:#64748b; font-size:0.8rem">Lien image ou ID Youtube ou Message</small>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Petit message (Sous-titre)</label>
+                            <input type="text" id="edit-subtext" placeholder="..." oninput="updatePreview()">
+                        </div>
+
+                        <div id="coupon-preview-container" class="preview-box hidden">
+                            <label>Aperçu en direct :</label>
+                            <div class="coupon-ticket preview">
+                                <div class="coupon-header">BON CADEAU</div>
+                                <div class="coupon-title" id="preview-title">Massage</div>
+                                <div class="coupon-sub" id="preview-sub">Valable ce soir</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="drawer-footer">
+                    <button class="save-btn" onclick="saveCurrentDay()">Valider ce jour</button>
+                </div>
             </div>
         </div>
     </div>
