@@ -1,32 +1,139 @@
+/* --- VARIABLES GLOBALES --- */
 const grid = document.getElementById('grid');
 const modal = document.getElementById('modal');
 const gameSection = document.getElementById('game-section');
 const rewardSection = document.getElementById('reward-section');
 const feedback = document.getElementById('feedback-msg');
 
-// --- CONFIGURATION DATE ---
 const today = new Date();
-const TARGET_MONTH = 0; // 0 = Janvier
-const TARGET_YEAR = 2026; 
+const TARGET_MONTH = 0; // Janvier
+const TARGET_YEAR = 2026;
 
-// --- INIT NEIGE (Optimisé) ---
+/* --- ADMIN --- */
+function openAdmin() {
+    document.getElementById('admin-interface').classList.remove('hidden');
+    document.getElementById('admin-login').classList.remove('hidden');
+    document.getElementById('admin-editor').classList.add('hidden');
+}
+
+function closeAdmin() {
+    document.getElementById('admin-interface').classList.add('hidden');
+}
+
+function checkAdmin() {
+    const pass = document.getElementById('admin-pass').value;
+    // MOT DE PASSE : Change "amour" par ce que tu veux
+    if(pass === "amour") {
+        document.getElementById('admin-login').classList.add('hidden');
+        document.getElementById('admin-editor').classList.remove('hidden');
+        loadEditor();
+    } else {
+        document.getElementById('admin-error').innerText = "Mauvais mot de passe !";
+    }
+}
+
+/* GÉNÉRATEUR D'ÉDITEUR (La partie magique) */
+function loadEditor() {
+    const list = document.getElementById('editor-list');
+    list.innerHTML = '';
+
+    calendarData.forEach((dayData, index) => {
+        const div = document.createElement('div');
+        div.className = 'day-editor';
+        div.innerHTML = `
+            <h3>Jour ${dayData.day}</h3>
+            
+            <div class="form-group">
+                <label>Type de Jeu</label>
+                <select onchange="updateRow(${index}, 'gameType', this.value)">
+                    <option value="none" ${dayData.gameType === 'none' ? 'selected' : ''}>Aucun (Cadeau direct)</option>
+                    <option value="quiz" ${dayData.gameType === 'quiz' ? 'selected' : ''}>Quiz (Question/Réponse)</option>
+                    <option value="code" ${dayData.gameType === 'code' ? 'selected' : ''}>Code Secret</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Question / Indice</label>
+                <input type="text" value="${dayData.question || ''}" onchange="updateRow(${index}, 'question', this.value)" placeholder="La question...">
+            </div>
+            <div class="form-group">
+                <label>Réponse attendue</label>
+                <input type="text" value="${dayData.answer || ''}" onchange="updateRow(${index}, 'answer', this.value)" placeholder="La réponse...">
+            </div>
+
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
+
+            <div class="form-group">
+                <label>Type de Récompense</label>
+                <select onchange="updateRow(${index}, 'rewardType', this.value)">
+                    <option value="text" ${dayData.reward.type === 'text' ? 'selected' : ''}>Texte Simple</option>
+                    <option value="image" ${dayData.reward.type === 'image' ? 'selected' : ''}>Image (Lien)</option>
+                    <option value="video" ${dayData.reward.type === 'video' ? 'selected' : ''}>Vidéo YouTube</option>
+                    <option value="coupon" ${dayData.reward.type === 'coupon' ? 'selected' : ''}>🎫 BON POUR (Ticket d'Or)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Contenu (Texte, Lien Image, ID Youtube ou Titre du Bon)</label>
+                <input type="text" value="${dayData.reward.content || ''}" onchange="updateRow(${index}, 'rewardContent', this.value)">
+            </div>
+            
+            <div class="form-group">
+                <label>Petit message en dessous (optionnel)</label>
+                <input type="text" value="${dayData.reward.text || ''}" onchange="updateRow(${index}, 'rewardText', this.value)">
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function updateRow(index, field, value) {
+    // Met à jour la variable locale calendarData
+    if(field === 'gameType') calendarData[index].gameType = value;
+    if(field === 'question') calendarData[index].question = value;
+    if(field === 'answer') calendarData[index].answer = value;
+    
+    // Pour la récompense, c'est un sous-objet
+    if(field === 'rewardType') calendarData[index].reward.type = value;
+    if(field === 'rewardContent') calendarData[index].reward.content = value;
+    if(field === 'rewardText') calendarData[index].reward.text = value;
+}
+
+function saveChanges() {
+    // Génère le contenu du fichier data.js
+    const fileContent = `/* CONFIGURATION GÉNÉRÉE PAR L'ADMIN */\nconst calendarData = ${JSON.stringify(calendarData, null, 4)};\n\nconst START_MONTH = 0;\nconst START_YEAR = 2026;`;
+    
+    // Crée un fichier téléchargeable
+    const blob = new Blob([fileContent], { type: "text/javascript" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "data.js";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    alert("Fichier 'data.js' téléchargé ! \n⚠️ MAINTENANT : Prends ce fichier et remplace l'ancien dans ton dossier ou sur GitHub !");
+}
+
+/* --- LOGIQUE CALENDRIER CLASSIQUE --- */
+
 function initSnow() {
     const container = document.getElementById('snow-container');
+    if(!container) return;
     container.innerHTML = '';
-    // On se limite à 20 flocons pour garantir la fluidité
     for(let i=0; i<20; i++) { 
         const fl = document.createElement('div');
         fl.className = 'snowflake';
         fl.innerText = '❄';
         fl.style.left = Math.random() * 100 + 'vw';
-        fl.style.fontSize = (Math.random() * 10 + 10) + 'px'; // Taille variable
-        fl.style.animationDuration = (Math.random() * 5 + 8) + 's'; // Chute lente
+        fl.style.fontSize = (Math.random() * 10 + 10) + 'px';
+        fl.style.animationDuration = (Math.random() * 5 + 8) + 's';
         fl.style.animationDelay = (Math.random() * 5) + 's';
         container.appendChild(fl);
     }
 }
 
-// --- INIT CALENDRIER ---
 function initCalendar() {
     grid.innerHTML = '';
     calendarData.sort((a,b) => a.day - b.day);
@@ -36,7 +143,6 @@ function initCalendar() {
         const el = document.createElement('div');
         el.className = 'day-card';
 
-        // Logique de Verrouillage
         const isFuture = (today.getFullYear() < TARGET_YEAR) || 
                          (today.getFullYear() === TARGET_YEAR && today.getMonth() < TARGET_MONTH) ||
                          (today.getFullYear() === TARGET_YEAR && today.getMonth() === TARGET_MONTH && today.getDate() < i);
@@ -58,27 +164,23 @@ function initCalendar() {
         }
         grid.appendChild(el);
     }
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
-// --- MODALE & JEUX ---
 function openModal(data, isReplay) {
     modal.classList.add('active');
     feedback.innerText = '';
-    const interactionArea = document.getElementById('interaction-area');
-    interactionArea.innerHTML = '';
+    document.getElementById('interaction-area').innerHTML = '';
 
     const title = document.getElementById('modal-title');
     const desc = document.getElementById('modal-desc');
 
-    // Affichage direct si replay ou pas de jeu
     if(isReplay || data.gameType === 'none') {
         if(!isReplay) markAsDone(data.day);
         showReward(data.reward);
         return;
     }
 
-    // Affichage du Jeu
     gameSection.classList.remove('hidden');
     rewardSection.classList.add('hidden');
     
@@ -90,8 +192,6 @@ function openModal(data, isReplay) {
         input.type = 'text';
         input.className = 'pc-input';
         input.placeholder = 'Votre réponse...';
-        
-        // Touche Entrée pour valider
         input.addEventListener("keypress", function(event) {
             if (event.key === "Enter") validate(input.value, data.answer, data);
         });
@@ -101,9 +201,7 @@ function openModal(data, isReplay) {
         btn.innerText = 'Valider';
         btn.onclick = () => validate(input.value, data.answer, data);
 
-        interactionArea.appendChild(input);
-        interactionArea.appendChild(btn);
-        
+        document.getElementById('interaction-area').append(input, btn);
         setTimeout(() => input.focus(), 100); 
     }
 }
@@ -126,7 +224,16 @@ function showReward(reward) {
     const display = document.getElementById('reward-display');
     let html = '';
 
-    if(reward.type === 'text') {
+    if(reward.type === 'coupon') {
+        // AFFICHAGE SPÉCIAL POUR LES BONS
+        html = `
+        <div class="coupon-ticket">
+            <div class="coupon-header">Bon Cadeau</div>
+            <div class="coupon-title">${reward.content}</div>
+            <div class="coupon-sub">${reward.text || "Valable dès mon retour ❤️"}</div>
+        </div>`;
+    } 
+    else if(reward.type === 'text') {
         html = `<p style="font-size:1.2rem; line-height:1.6; margin-top:20px;">${reward.content}</p>`;
     } else if (reward.type === 'image') {
         html = `<img src="${reward.content}" alt="Surprise"><p style="margin-top:15px; opacity:0.8">${reward.text || ''}</p>`;
@@ -146,11 +253,7 @@ function closeModal() {
     modal.classList.remove('active');
 }
 
-// Fermeture avec Echap
-document.addEventListener('keydown', (e) => {
-    if(e.key === "Escape") closeModal();
-});
+document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
 
-// Lancement
 initSnow();
 initCalendar();
