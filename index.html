@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>30 Jours - Édition Premium</title>
+    <title>30 Jours de Noël</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -67,92 +67,76 @@
                     <span>Studio de Création</span>
                 </div>
                 <div class="actions">
-                    <button class="btn-secondary" onclick="resetProgress()">🗑️ Reset Progression</button>
-                    <button class="btn-primary" onclick="exportData()">💾 Sauvegarder & Exporter</button>
+                    <button class="btn-secondary" onclick="resetProgress()">⚠️ Reset Site</button>
+                    <button class="btn-primary" onclick="exportData()">💾 Sauvegarder Config</button>
                     <button class="btn-close" onclick="toggleAdmin()"><i data-lucide="x"></i></button>
                 </div>
             </div>
 
-            <div class="admin-grid-view" id="admin-grid">
+            <div class="workspace-layout">
+                <div class="admin-grid-container">
+                    <h3>Sélectionne un jour à éditer :</h3>
+                    <div class="admin-grid-view" id="admin-grid"></div>
                 </div>
 
-            <div class="editor-drawer" id="editor-drawer">
-                <div class="drawer-header">
-                    <h3 id="drawer-title">Édition Jour 1</h3>
-                    <button onclick="closeDrawer()"><i data-lucide="x"></i></button>
+                <div class="editor-panel hidden" id="editor-panel">
+                    <div class="editor-header">
+                        <h3 id="editor-title">Édition Jour X</h3>
+                    </div>
+                    
+                    <div class="editor-scroll">
+                        <div class="config-block">
+                            <label class="block-label">1. LE DÉFI</label>
+                            <select id="edit-gameType" onchange="updateFormVisibility()">
+                                <option value="none">🎁 Cadeau Direct (Pas de jeu)</option>
+                                <option value="quiz">❓ Quiz (Question/Réponse)</option>
+                                <option value="code">🔑 Code Secret</option>
+                            </select>
+
+                            <div id="group-game-inputs" class="hidden">
+                                <div class="input-group">
+                                    <label>La Question / Indice</label>
+                                    <input type="text" id="edit-question" placeholder="Ex: Quelle est ma couleur ?">
+                                </div>
+                                <div class="input-group">
+                                    <label>La Réponse attendue</label>
+                                    <input type="text" id="edit-answer" placeholder="Ex: Bleu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <div class="config-block">
+                            <label class="block-label">2. LA SURPRISE</label>
+                            <select id="edit-rewardType" onchange="updateFormVisibility()">
+                                <option value="text">📝 Texte / Message</option>
+                                <option value="coupon">🎟️ Bon pour (Coupon)</option>
+                                <option value="image">📸 Photo (Lien)</option>
+                                <option value="video">🎬 Vidéo (Youtube)</option>
+                            </select>
+
+                            <div class="input-group">
+                                <label id="lbl-content">Contenu</label>
+                                <input type="text" id="edit-content" placeholder="...">
+                                <small id="hlp-content" class="helper">Lien image, ID Youtube ou Message</small>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label id="lbl-sub">Sous-titre / Détails</label>
+                                <input type="text" id="edit-subtext" placeholder="Petit texte en dessous...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editor-actions">
+                        <button class="save-day-btn" onclick="saveCurrentDay()">✅ Valider ce jour</button>
+                    </div>
                 </div>
                 
-                <div class="drawer-content">
-                    <div class="config-section">
-                        <label class="section-label">1. LE DÉFI (JEU)</label>
-                        <div class="type-selector" id="game-selector">
-                            <div class="type-card selected" onclick="setGameType('none', this)" data-val="none">
-                                <i data-lucide="gift"></i>
-                                <span>Cadeau Direct</span>
-                            </div>
-                            <div class="type-card" onclick="setGameType('quiz', this)" data-val="quiz">
-                                <i data-lucide="help-circle"></i>
-                                <span>Quiz</span>
-                            </div>
-                            <div class="type-card" onclick="setGameType('code', this)" data-val="code">
-                                <i data-lucide="key"></i>
-                                <span>Code Secret</span>
-                            </div>
-                        </div>
-
-                        <div id="game-fields" class="dynamic-fields hidden">
-                            <div class="field-group">
-                                <label>Question / Indice</label>
-                                <input type="text" id="edit-question" placeholder="Ex: Quelle est ma couleur préférée ?">
-                            </div>
-                            <div class="field-group">
-                                <label>Réponse attendue</label>
-                                <input type="text" id="edit-answer" placeholder="Ex: Bleu">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="config-section">
-                        <label class="section-label">2. LA SURPRISE</label>
-                        <div class="type-selector" id="reward-selector">
-                            <div class="type-card" onclick="setRewardType('text', this)" data-val="text">
-                                <i data-lucide="align-left"></i><span>Texte</span>
-                            </div>
-                            <div class="type-card" onclick="setRewardType('image', this)" data-val="image">
-                                <i data-lucide="image"></i><span>Photo</span>
-                            </div>
-                            <div class="type-card" onclick="setRewardType('video', this)" data-val="video">
-                                <i data-lucide="youtube"></i><span>Vidéo</span>
-                            </div>
-                            <div class="type-card" onclick="setRewardType('coupon', this)" data-val="coupon">
-                                <i data-lucide="ticket"></i><span>Bon</span>
-                            </div>
-                        </div>
-
-                        <div class="field-group">
-                            <label id="content-label">Contenu</label>
-                            <input type="text" id="edit-content" placeholder="..." oninput="updatePreview()">
-                            <small id="helper-text" style="color:#64748b; font-size:0.8rem">Lien image ou ID Youtube ou Message</small>
-                        </div>
-                        
-                        <div class="field-group">
-                            <label>Petit message (Sous-titre)</label>
-                            <input type="text" id="edit-subtext" placeholder="..." oninput="updatePreview()">
-                        </div>
-
-                        <div id="coupon-preview-container" class="preview-box hidden">
-                            <label>Aperçu en direct :</label>
-                            <div class="coupon-ticket preview">
-                                <div class="coupon-header">BON CADEAU</div>
-                                <div class="coupon-title" id="preview-title">Massage</div>
-                                <div class="coupon-sub" id="preview-sub">Valable ce soir</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="drawer-footer">
-                    <button class="save-btn" onclick="saveCurrentDay()">Valider ce jour</button>
+                <div class="empty-state" id="empty-state">
+                    <i data-lucide="mouse-pointer-2"></i>
+                    <p>Clique sur une case à gauche pour la modifier</p>
                 </div>
             </div>
         </div>
