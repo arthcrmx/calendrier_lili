@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Jours pour Nous</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="background">
+        <div class="snow"></div>
+    </div>
+
+    <header>
+        <h1>En t'attendant... ❄️</h1>
+        <p>Chaque jour, un petit jeu pour te rappeler que j'arrive.</p>
+    </header>
+
+    <main class="calendar-container" id="grid">
+        </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content glass">
+            <button class="close-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
+            
+            <div id="game-view">
+                <h2 id="game-title">Titre du jeu</h2>
+                <p id="game-instruction">Instruction</p>
+                <div id="game-interface"></div>
+                <p id="feedback-msg" class="feedback"></p>
+            </div>
+
+            <div id="reward-view" class="hidden">
+                <h2>Bravo mon cœur ❤️</h2>
+                <div id="reward-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
