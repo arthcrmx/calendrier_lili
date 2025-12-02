@@ -1,42 +1,56 @@
 const grid = document.getElementById('grid');
 const modal = document.getElementById('modal');
-const gameView = document.getElementById('game-view');
-const rewardView = document.getElementById('reward-view');
+const gameSection = document.getElementById('game-section');
+const rewardSection = document.getElementById('reward-section');
+const feedback = document.getElementById('feedback-msg');
 
-// Initialisation
+// DATE CIBLE
 const today = new Date();
-// Pour tester, décommente la ligne dessous :
-// const today = new Date(2026, 0, 15); 
+const TARGET_MONTH = 0; // Janvier
+const TARGET_YEAR = 2026;
 
-function init() {
+// NEIGE (Version Desktop : Plus de flocons car écran plus grand)
+function initSnow() {
+    const container = document.getElementById('snow-container');
+    for(let i=0; i<50; i++) { // 50 flocons
+        const fl = document.createElement('div');
+        fl.className = 'snowflake';
+        fl.innerText = '❄';
+        fl.style.left = Math.random() * 100 + 'vw';
+        fl.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        fl.style.animationDuration = (Math.random() * 5 + 5) + 's';
+        fl.style.animationDelay = (Math.random() * 5) + 's';
+        container.appendChild(fl);
+    }
+}
+
+function initCalendar() {
     grid.innerHTML = '';
-    
-    // Génère les 30 cases
-    for (let i = 1; i <= 30; i++) {
-        const data = calendarData.find(d => d.day === i) || {};
+    calendarData.sort((a,b) => a.day - b.day);
+
+    for(let i=1; i<=30; i++) {
+        const data = calendarData.find(d => d.day === i) || { day: i, gameType: 'none', reward: { type: 'text', content: '...' }};
         const el = document.createElement('div');
         el.className = 'day-card';
+
+        // Verrouillage
+        const isFuture = (today.getFullYear() < TARGET_YEAR) || 
+                         (today.getFullYear() === TARGET_YEAR && today.getMonth() < TARGET_MONTH) ||
+                         (today.getFullYear() === TARGET_YEAR && today.getMonth() === TARGET_MONTH && today.getDate() < i);
         
-        // Verrouillage temporel
-        const isLocked = (today.getMonth() !== START_MONTH || today.getFullYear() !== START_YEAR || today.getDate() < i);
-        
-        if (isLocked) {
+        const isDone = localStorage.getItem('day_'+i) === 'true';
+
+        if(isFuture) {
             el.classList.add('locked');
-            el.innerHTML = `<span class="day-number">${i}</span><i data-lucide="lock" class="day-icon"></i>`;
-            el.onclick = () => alert("Chut... Pas encore ! 🤫");
+            el.innerHTML = `<span class="day-num">${i}</span><i data-lucide="lock" class="day-icon"></i>`;
         } else {
-            // Case ouverte ou à ouvrir
-            // On vérifie si c'est déjà gagné dans le stockage du navigateur
-            const isDone = localStorage.getItem(`day_${i}_done`);
-            
             if(isDone) {
                 el.classList.add('done');
-                el.style.background = "rgba(255, 255, 255, 0.3)";
-                el.innerHTML = `<span class="day-number">${i}</span><i data-lucide="check" class="day-icon"></i>`;
-                el.onclick = () => showReward(data.reward); // Revoir la récompense
+                el.innerHTML = `<span class="day-num">${i}</span><i data-lucide="check" class="day-icon"></i>`;
+                el.onclick = () => openModal(data, true);
             } else {
-                el.innerHTML = `<span class="day-number">${i}</span><i data-lucide="gift" class="day-icon"></i>`;
-                el.onclick = () => launchGame(data);
+                el.innerHTML = `<span class="day-num">${i}</span><i data-lucide="gift" class="day-icon"></i>`;
+                el.onclick = () => openModal(data, false);
             }
         }
         grid.appendChild(el);
@@ -44,90 +58,93 @@ function init() {
     lucide.createIcons();
 }
 
-function launchGame(data) {
-    if (!data) return;
-    
-    // Reset vues
+function openModal(data, isReplay) {
     modal.classList.add('active');
-    gameView.classList.remove('hidden');
-    rewardView.classList.add('hidden');
-    
-    const title = document.getElementById('game-title');
-    const instruction = document.getElementById('game-instruction');
-    const interface = document.getElementById('game-interface');
-    const feedback = document.getElementById('feedback-msg');
-    
-    feedback.innerText = "";
-    interface.innerHTML = "";
+    feedback.innerText = '';
+    const interactionArea = document.getElementById('interaction-area');
+    interactionArea.innerHTML = '';
 
-    // Moteur de Jeu
-    if (data.gameType === 'none') {
-        // Pas de jeu, on gagne direct
-        markAsDone(data.day);
+    const title = document.getElementById('modal-title');
+    const desc = document.getElementById('modal-desc');
+
+    if(isReplay || data.gameType === 'none') {
+        if(!isReplay) markAsDone(data.day);
         showReward(data.reward);
         return;
-    } 
+    }
+
+    // JEUX
+    gameSection.classList.remove('hidden');
+    rewardSection.classList.add('hidden');
     
-    if (data.gameType === 'quiz' || data.gameType === 'code') {
-        title.innerText = data.gameType === 'quiz' ? "Petite Question..." : "Code Secret";
-        instruction.innerText = data.question;
-        
+    if(data.gameType === 'quiz' || data.gameType === 'code') {
+        title.innerText = data.gameType === 'quiz' ? "Question" : "Code Secret";
+        desc.innerText = data.question;
+
         const input = document.createElement('input');
-        input.type = "text";
-        input.placeholder = "Ta réponse...";
+        input.type = 'text';
+        input.className = 'pc-input';
+        input.placeholder = 'Réponse...';
         
+        // Support touche "Entrée"
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") validate(input.value, data.answer, data);
+        });
+
         const btn = document.createElement('button');
-        btn.className = "game-btn";
-        btn.innerText = "Valider";
+        btn.className = 'pc-btn';
+        btn.innerText = 'Valider';
+        btn.onclick = () => validate(input.value, data.answer, data);
+
+        interactionArea.appendChild(input);
+        interactionArea.appendChild(btn);
         
-        btn.onclick = () => {
-            if (input.value.toLowerCase().trim() === data.answer.toLowerCase().trim()) {
-                feedback.style.color = "#a8edea";
-                feedback.innerText = "Bravo !";
-                setTimeout(() => {
-                    markAsDone(data.day);
-                    showReward(data.reward);
-                }, 800);
-            } else {
-                feedback.style.color = "#ff9a9e";
-                feedback.innerText = "Oups... essaie encore ❤️";
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-            }
-        };
-        
-        interface.appendChild(input);
-        interface.appendChild(btn);
+        setTimeout(() => input.focus(), 100); // Focus auto
+    }
+}
+
+function validate(val, correct, data) {
+    if(val.toLowerCase().trim() === correct.toLowerCase().trim()) {
+        markAsDone(data.day);
+        showReward(data.reward);
+    } else {
+        feedback.innerText = "Mauvaise réponse... Essaie encore !";
+        // Petit effet de vibration sur l'input (visuel)
+        document.querySelector('.pc-input').style.borderColor = '#f87171';
     }
 }
 
 function showReward(reward) {
-    gameView.classList.add('hidden');
-    rewardView.classList.remove('hidden');
-    
-    const contentDiv = document.getElementById('reward-content');
-    let html = "";
-    
-    if (reward.type === 'text') {
-        html = `<p style="font-size:1.2rem; margin-top:20px;">${reward.content}</p>`;
+    gameSection.classList.add('hidden');
+    rewardSection.classList.remove('hidden');
+
+    const display = document.getElementById('reward-display');
+    let html = '';
+
+    if(reward.type === 'text') {
+        html = `<p style="font-size:1.2rem; line-height:1.6; margin-top:20px;">${reward.content}</p>`;
     } else if (reward.type === 'image') {
-        html = `<img src="${reward.content}" alt="Surprise"><p>${reward.text || ''}</p>`;
+        html = `<img src="${reward.content}" alt="Surprise"><p style="margin-top:10px">${reward.text || ''}</p>`;
     } else if (reward.type === 'video') {
-        html = `<div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin-top:20px;">
-                    <iframe src="https://www.youtube.com/embed/${reward.content}" style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:12px;" frameborder="0" allowfullscreen></iframe>
-                </div><p>${reward.text || ''}</p>`;
+        html = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${reward.content}" frameborder="0" allowfullscreen></iframe></div><p style="margin-top:10px">${reward.text || ''}</p>`;
     }
-    
-    contentDiv.innerHTML = html;
+
+    display.innerHTML = html;
 }
 
-function markAsDone(dayId) {
-    localStorage.setItem(`day_${dayId}_done`, "true");
-    init(); // Rafraichir la grille
+function markAsDone(day) {
+    localStorage.setItem('day_'+day, 'true');
+    initCalendar();
 }
 
 function closeModal() {
     modal.classList.remove('active');
 }
 
-init();
+// Fermer avec la touche Echap
+document.addEventListener('keydown', (e) => {
+    if(e.key === "Escape") closeModal();
+});
+
+initSnow();
+initCalendar();
