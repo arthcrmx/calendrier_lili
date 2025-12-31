@@ -105,7 +105,7 @@ function validate(val, correct, data) {
         markAsDone(data.day);
         showReward(data.reward);
     } else {
-        feedback.innerText = "Non, ce n'est pas ça... ❤️";
+        feedback.innerText = "Non, perdu, t'es nulle bahhhh";
         // Petit effet visuel d'erreur
         const input = document.querySelector('.pc-input');
         if(input) {
