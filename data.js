@@ -32,6 +32,17 @@ const calendarData = [
             "content": "https://youtu.be/HVQSbgG69Sc?si=vWDEELTCtUJ-q_W8",
             "text": "lol, il va pas y avoir des trucs gratuits tous les jours heinn"
         }
+    },
+    {
+        "day": 4,
+        "gameType": "quiz",
+        "question": "Quel est mon jeu vidéo favori ? (nom complet)",
+        "answer": "Red Dead Redemption 2",
+        "reward": {
+            "type": "image",
+            "content": "20260103_215605.jpg",
+            "text": "Bon courage pour cette magnifique journée mon amour, c'est la dernière ligne droite tu vas tout casser 🫶🫶"
+        }
     }
 ];
 
