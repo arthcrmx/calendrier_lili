@@ -40,9 +40,20 @@ const calendarData = [
         "answer": "Red Dead Redemption 2",
         "reward": {
             "type": "image",
-            "content": "20260103_215605.jpg",
-            "text": "Bon courage pour cette magnifique journée mon amour, c'est la dernière ligne droite tu vas tout casser 🫶🫶"
+            "content": "photos/jeu.jpg",
+            "text": "On y jouera ensemble un jour !"
         }
+    },
+    {
+        "day": 5,
+        "gameType": "none",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour 1h30 de jeux/film/vidéo avec ton Tutur !",
+            "text": "Pour te récompenser de ton travail pour ce partiel , plus qu'un !! Je t'aime mon coeur"
+        },
+        "question": "",
+        "answer": ""
     }
 ];
 
