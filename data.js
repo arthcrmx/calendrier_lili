@@ -54,6 +54,17 @@ const calendarData = [
         },
         "question": "",
         "answer": ""
+    },
+    {
+        "day": 6,
+        "gameType": "quiz",
+        "question": "Résous cette opération : (15 * 4 - 24) / 3",
+        "answer": "12",
+        "reward": {
+            "type": "text",
+            "content": "bravo ! c'est même pas la taille du zizi de ton mec en centimètres, t'as pas honte ?",
+            "text": ""
+        }
     }
 ];
 
