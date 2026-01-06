@@ -65,6 +65,17 @@ const calendarData = [
             "content": "bravo ! c'est même pas la taille du zizi de ton mec en centimètres, t'as pas honte ?",
             "text": ""
         }
+    },
+    {
+        "day": 7,
+        "gameType": "none",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour un copain qui sait être présent émotionnellement et qui te parle de ses sentiments.",
+            "text": "Bon courage pour ta journée mon coeur"
+        },
+        "question": "",
+        "answer": ""
     }
 ];
 
