@@ -76,6 +76,17 @@ const calendarData = [
         },
         "question": "",
         "answer": ""
+    },
+    {
+        "day": 8,
+        "gameType": "none",
+        "reward": {
+            "type": "text",
+            "content": "Indice sur la date de mon retour",
+            "text": "Le 9ème d'une lignée infinie"
+        },
+        "question": "",
+        "answer": ""
     }
 ];
 
