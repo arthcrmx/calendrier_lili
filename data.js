@@ -87,6 +87,17 @@ const calendarData = [
         },
         "question": "",
         "answer": ""
+    },
+    {
+        "day": 9,
+        "gameType": "none",
+        "reward": {
+            "type": "image",
+            "content": "photos/20251029_140639.jpg",
+            "text": "j'ai pas pu mettre de question parce que tu as déjà ouvert la case donc pour la peine voici ce magnifique cliché de ton merveilleux copain"
+        },
+        "question": "",
+        "answer": ""
     }
 ];
 
