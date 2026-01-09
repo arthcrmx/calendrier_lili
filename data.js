@@ -93,11 +93,22 @@ const calendarData = [
         "gameType": "none",
         "reward": {
             "type": "image",
-            "content": "photos/20251029_140639.jpg",
+            "content": "20251029_140639.jpg",
             "text": "j'ai pas pu mettre de question parce que tu as déjà ouvert la case donc pour la peine voici ce magnifique cliché de ton merveilleux copain"
         },
         "question": "",
         "answer": ""
+    },
+    {
+        "day": 10,
+        "gameType": "code",
+        "question": "jour de emma (la mienne) + 2, mois de valérie - mois de JR, année de vic + 14, la réponse devrait te faire penser à quelque chose hihi (écris au format JJMMAA)",
+        "answer": "290825",
+        "reward": {
+            "type": "image",
+            "content": "20260109_231607.jpg",
+            "text": "Les doudous et moi te souhaitons une journée merveilleuse et rayonnante (comme toi), je t'aimeeee j'ai hate de te revoir !!!!"
+        }
     }
 ];
 
