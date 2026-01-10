@@ -103,7 +103,7 @@ const calendarData = [
         "day": 10,
         "gameType": "code",
         "question": "jour de emma (la mienne) + 2, mois de valérie - mois de JR, année de vic + 14, la réponse devrait te faire penser à quelque chose hihi (écris au format JJMMAA)",
-        "answer": "290825",
+        "answer": "290824",
         "reward": {
             "type": "image",
             "content": "20260109_231607.jpg",
