@@ -93,7 +93,7 @@ const calendarData = [
         "gameType": "none",
         "reward": {
             "type": "image",
-            "content": "20251029_140639.jpg",
+            "content": "photos/20251029_140639.jpg",
             "text": "j'ai pas pu mettre de question parce que tu as déjà ouvert la case donc pour la peine voici ce magnifique cliché de ton merveilleux copain"
         },
         "question": "",
@@ -103,11 +103,22 @@ const calendarData = [
         "day": 10,
         "gameType": "code",
         "question": "jour de emma (la mienne) + 2, mois de valérie - mois de JR, année de vic + 14, la réponse devrait te faire penser à quelque chose hihi (écris au format JJMMAA)",
-        "answer": "290824",
+        "answer": "290825",
         "reward": {
             "type": "image",
-            "content": "20260109_231607.jpg",
+            "content": "photos/20260109_231607.jpg",
             "text": "Les doudous et moi te souhaitons une journée merveilleuse et rayonnante (comme toi), je t'aimeeee j'ai hate de te revoir !!!!"
+        }
+    },
+    {
+        "day": 11,
+        "gameType": "quiz",
+        "question": "Quel a été ma note finale au bac ?",
+        "answer": "14.5",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour une lettre sentimentale à devoir écrire instantanément",
+            "text": ""
         }
     }
 ];
