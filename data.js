@@ -127,10 +127,21 @@ const calendarData = [
         "reward": {
             "type": "text",
             "content": "Indice sur la date de mon retour n°2",
-            "text": "Résous cette intégrale : I = [ ∫_{2}^{5} (2x - 2) dx ] + 8"
+            "text": "Résous cette intégrale pour obtenir le code : I = [ ∫_{2}^{5} (2x - 2) dx ] + 8"
         },
         "question": "",
         "answer": ""
+    },
+    {
+        "day": 13,
+        "gameType": "quiz",
+        "question": "Quelle est la fille la plus forte du monde ?",
+        "answer": "Line",
+        "reward": {
+            "type": "text",
+            "content": "Voici une liste d'adjectifs originaux qui je trouve te correspondent. (Je te laisse le plaisir d'aller chercher leur sens) : Inextinguible, Iatrogène, Résiliente, Magnanime, Sagace, Réflexive, Coruscante, Souveraine, Insubmersible, Involutée, Paradigmatique, Inaltérable, Onirique, Pétulante, Radieuse, Sempiternelle, Intrépide, Majestueuse, Singulière, Infrangible.",
+            "text": "Je t'aime du plus profond amour qui existe mon coeur"
+        }
     }
 ];
 
