@@ -120,6 +120,17 @@ const calendarData = [
             "content": "Bon pour une lettre sentimentale à devoir écrire instantanément",
             "text": ""
         }
+    },
+    {
+        "day": 12,
+        "gameType": "none",
+        "reward": {
+            "type": "text",
+            "content": "Indice sur la date de mon retour n°2",
+            "text": "Résous cette intégrale : I = [ ∫_{2}^{5} (2x - 2) dx ] + 8"
+        },
+        "question": "",
+        "answer": ""
     }
 ];
 
