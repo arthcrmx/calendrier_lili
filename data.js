@@ -139,8 +139,19 @@ const calendarData = [
         "answer": "Line",
         "reward": {
             "type": "text",
-            "content": "Voici une liste d'adjectifs originaux qui je trouve te correspondent. (Je te laisse le plaisir d'aller chercher leur sens) : Inextinguible, Iatrogène, Résiliente, Magnanime, Sagace, Réflexive, Coruscante, Souveraine, Insubmersible, Involutée, Paradigmatique, Inaltérable, Onirique, Pétulante, Radieuse, Sempiternelle, Intrépide, Majestueuse, Singulière, Infrangible.",
-            "text": "Je t'aime du plus profond amour qui existe mon coeur"
+            "content": "Voici une liste d'adjectifs originaux qui je trouve te correspondent. (Je te laisse le plaisir d'aller chercher leur sens) : Inextinguible, Thaumaturge, Résiliente, Magnanime, Sagace, Réflexive, Coruscante, Souveraine, Insubmersible, Idoine, Paradigmatique, Inaltérable, Onirique, Pétulante, Radieuse, Sempiternelle, Intrépide, Majestueuse, Singulière, Infrangible.",
+            "text": ""
+        }
+    },
+    {
+        "day": 14,
+        "gameType": "code",
+        "question": "Logique matricielle : [Ligne 1 : 8, 5, 3] | [Ligne 2 : 9, 2, 7] | [Ligne 3 : 14, 6, X]. Trouve X.",
+        "answer": "8",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour 1 journée sans téléphone",
+            "text": ""
         }
     }
 ];
