@@ -153,6 +153,28 @@ const calendarData = [
             "content": "Bon pour 1 journée sans téléphone",
             "text": ""
         }
+    },
+    {
+        "day": 16,
+        "gameType": "quiz",
+        "question": "Le nom de mon 2eme chat",
+        "answer": "Ollie",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour une session dessin ensemble",
+            "text": ""
+        }
+    },
+    {
+        "day": 17,
+        "gameType": "none",
+        "question": "",
+        "answer": "",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour 2h ou je dois dire oui a tout (dans la limite du raisonnable gros caca",
+            "text": "je t'aime mon petit prout sauvage"
+        }
     }
 ];
 
