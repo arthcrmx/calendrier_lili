@@ -127,7 +127,7 @@ const calendarData = [
         "reward": {
             "type": "text",
             "content": "Indice sur la date de mon retour n°2",
-            "text": "Résous cette intégrale pour obtenir le code : I = [ ∫_{2}^{5} (2x - 2) dx ] + 8"
+            "text": "Résous cette intégrale pour obtenir le code : Prout + pipi - caca = ?"
         },
         "question": "",
         "answer": ""
