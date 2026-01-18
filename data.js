@@ -175,6 +175,17 @@ const calendarData = [
             "content": "Bon pour 2h ou je dois dire oui a tout (dans la limite du raisonnable gros caca",
             "text": "je t'aime mon petit prout sauvage"
         }
+    },
+    {
+        "day": 18,
+        "gameType": "quiz",
+        "question": "Quel est mon humain préféré dans le monde tout entier",
+        "answer": "Lili",
+        "reward": {
+            "type": "text",
+            "content": "J'AI TELLEMENT HATE QU'ON HABITE ENSEMBLE ET DE RENTRER ET TE REVOIR QUE CA PASSE VITE SVPPPPP",
+            "text": "tu me manques trop"
+        }
     }
 ];
 
