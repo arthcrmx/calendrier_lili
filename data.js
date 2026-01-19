@@ -197,6 +197,17 @@ const calendarData = [
             "content": "On s'aimera toujours et pour toute la vie et ca changera jamais",
             "text": "Line Marie Averty Bonnefoy l'amour de ma vie"
         }
+    },
+    {
+        "day": 20,
+        "gameType": "none",
+        "question": "",
+        "answer": "",
+        "reward": {
+            "type": "coupon",
+            "content": "Bon pour une activité de ton choix au moment ou tu le desires !",
+            "text": "Ca peut etre de tout type donc choisis bien hihihi"
+        }
     }
 ];
 
