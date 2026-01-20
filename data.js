@@ -208,6 +208,17 @@ const calendarData = [
             "content": "Bon pour une activité de ton choix au moment ou tu le desires !",
             "text": "Ca peut etre de tout type donc choisis bien hihihi"
         }
+    },
+    {
+        "day": 21,
+        "gameType": "none",
+        "question": "",
+        "answer": "",
+        "reward": {
+            "type": "image",
+            "content": "20260121_012003.jpg",
+            "text": "Photo de moi quand je pense à toi (comme 100% du temps)"
+        }
     }
 ];
 
