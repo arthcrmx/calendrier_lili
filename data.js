@@ -219,6 +219,17 @@ const calendarData = [
             "content": "20260121_012003.jpg",
             "text": "Photo de moi quand je pense à toi (comme 100% du temps)"
         }
+    },
+    {
+        "day": 22,
+        "gameType": "code",
+        "question": "Quel est l'annee de naissance de mon papa",
+        "answer": "1973",
+        "reward": {
+            "type": "text",
+            "content": "LES 2 JOURS LES PLUS LONGS DE MA VIE SVPPPP FAITES QUE CA PASSE VITE",
+            "text": "JE T'AIME J'EN PEUX PLUS"
+        }
     }
 ];
 
